@@ -1,0 +1,15 @@
+<nav class="scroll-nav" [class.visible]="isVisible()">
+  <div class="scroll-nav-items">
+    @for (section of sections(); track section.id) {
+      <button
+        class="scroll-nav-item"
+        [class.active]="isActive(section.id)"
+        (click)="scrollToSection(section.id)"
+        [attr.aria-label]="'Navigate to ' + section.label"
+        [attr.aria-current]="isActive(section.id) ? 'true' : null">
+        <span class="nav-indicator"></span>
+        <span class="nav-label">{{ section.label }}</span>
+      </button>
+    }
+  </div>
+</nav>

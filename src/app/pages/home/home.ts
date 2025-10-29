@@ -6,6 +6,7 @@ import { ServicesComponent } from '../../components/services/services';
 import { CaseStudiesComponent } from '../../components/case-studies/case-studies';
 import { TestimonialsComponent } from '../../components/testimonials/testimonials';
 import { CtaComponent } from '../../components/cta/cta';
+import { ScrollNavComponent } from '../../components/scroll-nav/scroll-nav';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,8 @@ import { CtaComponent } from '../../components/cta/cta';
     ServicesComponent,
     CaseStudiesComponent,
     TestimonialsComponent,
-    CtaComponent
+    CtaComponent,
+    ScrollNavComponent
   ]
 })
 export class HomePage {}
