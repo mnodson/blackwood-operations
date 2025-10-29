@@ -1,0 +1,60 @@
+<section id="case-studies" class="case-studies">
+  <div class="container">
+    <h2 class="section-title">Proven Results</h2>
+    <p class="section-subtitle">
+      Real-world engagements delivering measurable impact
+    </p>
+
+    <div class="carousel-wrapper" (mouseenter)="pauseAutoPlay()" (mouseleave)="resumeAutoPlay()">
+      <button
+        class="carousel-button carousel-button-prev"
+        (click)="previousSlide()"
+        aria-label="Previous case study">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="carousel-viewport">
+        <div class="carousel-container" [style.transform]="translateX()">
+          @for (caseStudy of caseStudies(); track caseStudy.title) {
+            <div class="case-study-card">
+              <div class="case-study-image">
+                <img
+                  [ngSrc]="caseStudy.image"
+                  [alt]="caseStudy.title"
+                  width="800"
+                  height="400"
+                  priority />
+              </div>
+              <div class="case-study-content">
+                <h3 class="case-study-title">{{ caseStudy.title }}</h3>
+                <p class="case-study-description">{{ caseStudy.description }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <button
+        class="carousel-button carousel-button-next"
+        (click)="nextSlide()"
+        aria-label="Next case study">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <div class="carousel-indicators">
+      @for (caseStudy of caseStudies(); track $index) {
+        <button
+          class="carousel-indicator"
+          [class.active]="currentIndex() === $index"
+          (click)="goToSlide($index)"
+          [attr.aria-label]="'Go to case study ' + ($index + 1)">
+        </button>
+      }
+    </div>
+  </div>
+</section>

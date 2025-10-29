@@ -1,0 +1,48 @@
+<nav class="navigation">
+  <div class="container">
+    <div class="nav-content">
+      <a routerLink="/" class="brand">
+        <span class="brand-name">Blackwood Operations</span>
+      </a>
+
+      <button
+        class="mobile-menu-toggle"
+        (click)="toggleMobileMenu()"
+        [attr.aria-label]="mobileMenuOpen() ? 'Close menu' : 'Open menu'"
+        [attr.aria-expanded]="mobileMenuOpen()">
+        <span class="hamburger-icon">
+          @if (!mobileMenuOpen()) {
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          } @else {
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          }
+        </span>
+      </button>
+
+      <div class="nav-links" [class.open]="mobileMenuOpen()">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()" class="nav-link">
+          Home
+        </a>
+        <a routerLink="/leadership" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link">
+          Leadership
+        </a>
+        <a href="#services" (click)="closeMobileMenu()" class="nav-link">
+          Services
+        </a>
+        <a href="#case-studies" (click)="closeMobileMenu()" class="nav-link">
+          Case Studies
+        </a>
+        <a href="#contact" (click)="closeMobileMenu()" class="nav-link nav-link-cta">
+          Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>

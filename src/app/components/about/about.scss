@@ -1,0 +1,48 @@
+.about {
+  background-color: #ffffff;
+
+  .section-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+  }
+
+  .about-content {
+    max-width: 900px;
+    margin: 0 auto;
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .lead {
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+    }
+
+    .about-cta-text {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 1.15rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    .about-content {
+      p {
+        font-size: 1rem;
+      }
+
+      .lead {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

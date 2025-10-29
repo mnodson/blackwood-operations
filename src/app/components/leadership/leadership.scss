@@ -1,0 +1,210 @@
+.leadership {
+  background-color: #ffffff;
+
+  .section-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 4rem;
+  }
+
+  .leaders {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .leader-profile {
+    background-color: var(--background-light);
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .leader-header {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .leader-info {
+    .leader-name {
+      color: var(--primary-color);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .leader-title {
+      color: var(--accent-color);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .leader-location {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .linkedin-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-color);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--accent-color);
+        transition: fill 0.3s ease;
+      }
+
+      &:hover {
+        color: var(--accent-hover);
+        transform: translateX(3px);
+
+        svg {
+          fill: var(--accent-hover);
+        }
+      }
+    }
+  }
+
+  .leader-bio {
+    margin-bottom: 2.5rem;
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .leader-expertise {
+    .expertise-title {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    .expertise-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .expertise-item {
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      border-left: 3px solid var(--accent-color);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      .expertise-image {
+        width: 100%;
+        height: 150px;
+        overflow: hidden;
+        position: relative;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+      }
+
+      &:hover .expertise-image img {
+        transform: scale(1.05);
+      }
+
+      .expertise-content {
+        padding: 1.25rem;
+      }
+
+      .expertise-item-title {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+      }
+
+      .expertise-item-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .leadership {
+    .section-subtitle {
+      margin-bottom: 2.5rem;
+    }
+
+    .leaders {
+      gap: 2.5rem;
+    }
+
+    .leader-profile {
+      padding: 2rem 1.5rem;
+    }
+
+    .leader-info {
+      .leader-name {
+        font-size: 1.75rem;
+      }
+
+      .leader-title {
+        font-size: 1.15rem;
+      }
+    }
+
+    .leader-bio {
+      p {
+        font-size: 1rem;
+      }
+    }
+
+    .leader-expertise {
+      .expertise-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .expertise-item {
+        .expertise-image {
+          height: 140px;
+        }
+      }
+    }
+  }
+}

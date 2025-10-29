@@ -1,0 +1,26 @@
+<section id="services" class="services">
+  <div class="container">
+    <h2 class="section-title">Our Expertise</h2>
+    <p class="section-subtitle">
+      Comprehensive operational support across all stages of growth
+    </p>
+    <div class="services-grid">
+      @for (service of services(); track service.title) {
+        <div class="service-card">
+          <div class="service-image">
+            <img
+              [ngSrc]="service.image"
+              [alt]="service.title"
+              width="400"
+              height="250"
+              priority />
+          </div>
+          <div class="service-content">
+            <h3 class="service-title">{{ service.title }}</h3>
+            <p class="service-description">{{ service.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
