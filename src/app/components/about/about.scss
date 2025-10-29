@@ -1,34 +1,39 @@
 .about {
-  background-color: #ffffff;
+  background-color: var(--background-cream);
+  position: relative;
 
   .section-title {
     text-align: center;
     color: var(--primary-color);
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
   }
 
   .about-content {
-    max-width: 900px;
+    max-width: 850px;
     margin: 0 auto;
+    text-align: center;
 
     p {
-      font-size: 1.1rem;
+      font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
       line-height: 1.8;
       color: var(--text-secondary);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
     }
 
     .lead {
-      font-size: 1.35rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 2rem;
+      font-size: clamp(1.25rem, 2vw, 1.5rem);
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
     }
 
     .about-cta-text {
-      font-weight: 500;
-      color: var(--text-primary);
-      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+      margin-bottom: 0;
     }
   }
 }
@@ -36,13 +41,7 @@
 @media (max-width: 768px) {
   .about {
     .about-content {
-      p {
-        font-size: 1rem;
-      }
-
-      .lead {
-        font-size: 1.2rem;
-      }
+      text-align: left;
     }
   }
 }

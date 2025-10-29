@@ -1,0 +1,23 @@
+<section class="testimonials">
+  <div class="container">
+    <h2 class="section-title">Client Success Stories</h2>
+    <p class="section-subtitle">
+      Hear from leaders who've transformed their operations with Blackwood Operations
+    </p>
+
+    <div class="testimonials-grid">
+      @for (testimonial of testimonials(); track testimonial.author) {
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <blockquote class="testimonial-quote">
+            {{ testimonial.quote }}
+          </blockquote>
+          <div class="testimonial-author">
+            <div class="author-name">{{ testimonial.author }}</div>
+            <div class="author-title">{{ testimonial.title }}, {{ testimonial.company }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
