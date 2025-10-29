@@ -15,8 +15,8 @@ declare global {
 export class CalendlyWidgetComponent implements OnInit {
   @ViewChild('calendlyContainer', { static: true }) calendlyContainer!: ElementRef;
 
-  readonly url = input<string>('https://calendly.com/blackwoodops');
-  readonly minHeight = input<string>('630px');
+  readonly url = input<string>('https://calendly.com/donna-nodson/30min');
+  readonly minHeight = input<string>('700px');
 
   ngOnInit(): void {
     this.initializeCalendly();

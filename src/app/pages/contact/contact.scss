@@ -26,7 +26,7 @@
 
 .contact-content {
   padding: clamp(4rem, 8vw, 6rem) 0;
-  background-color: var(--background-light);
+  background-color: var(--background-cream);
 }
 
 .contact-grid {
@@ -225,8 +225,8 @@
 }
 
 .calendly-section {
-  padding: clamp(4rem, 8vw, 6rem) 0;
-  background-color: #ffffff;
+  padding: clamp(5rem, 10vw, 7rem) 0 clamp(4rem, 8vw, 6rem);
+  background-color: var(--background-light);
 
   .calendly-header {
     text-align: center;
@@ -255,6 +255,7 @@
     border-radius: 4px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    min-height: 700px;
   }
 }
 

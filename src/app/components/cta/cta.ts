@@ -7,5 +7,5 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CtaComponent {
-  protected readonly calendlyUrl = signal('https://calendly.com/blackwood-operations');
+  protected readonly calendlyUrl = signal('https://calendly.com/donna-nodson/30min');
 }

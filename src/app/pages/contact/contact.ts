@@ -68,6 +68,6 @@ export class ContactPage {
   }
 
   protected openCalendly(): void {
-    window.open('https://calendly.com/blackwoodops', '_blank');
+    window.open('https://calendly.com/donna-nodson/30min', '_blank');
   }
 }
