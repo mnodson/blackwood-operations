@@ -1,5 +1,15 @@
 <nav class="scroll-nav" [class.visible]="isVisible()">
   <div class="scroll-nav-items">
+    <button
+      class="scroll-nav-item back-to-top"
+      (click)="scrollToTop()"
+      aria-label="Back to top">
+      <span class="nav-indicator top-indicator">↑</span>
+      <span class="nav-label">Top</span>
+    </button>
+
+    <div class="nav-divider"></div>
+
     @for (section of sections(); track section.id) {
       <button
         class="scroll-nav-item"

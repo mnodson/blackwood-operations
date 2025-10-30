@@ -6,16 +6,10 @@
     </p>
 
     <div class="carousel-wrapper" (mouseenter)="pauseAutoPlay()" (mouseleave)="resumeAutoPlay()">
-      <button
-        class="carousel-button carousel-button-prev"
-        (click)="previousSlide()"
-        aria-label="Previous case study">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-
-      <div class="carousel-viewport">
+      <div class="carousel-viewport"
+           (touchstart)="onTouchStart($event)"
+           (touchmove)="onTouchMove($event)"
+           (touchend)="onTouchEnd()">
         <div class="carousel-container" [style.transform]="translateX()">
           @for (caseStudy of caseStudies(); track caseStudy.title) {
             <div class="case-study-card">
@@ -35,26 +29,37 @@
           }
         </div>
       </div>
+    </div>
+
+    <div class="carousel-controls">
+      <button
+        class="carousel-button carousel-button-prev"
+        (click)="previousSlide()"
+        aria-label="Previous case study">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="carousel-indicators">
+        @for (caseStudy of caseStudies(); track $index) {
+          <button
+            class="carousel-indicator"
+            [class.active]="currentIndex() === $index"
+            (click)="goToSlide($index)"
+            [attr.aria-label]="'Go to case study ' + ($index + 1)">
+          </button>
+        }
+      </div>
 
       <button
         class="carousel-button carousel-button-next"
         (click)="nextSlide()"
         aria-label="Next case study">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </button>
-    </div>
-
-    <div class="carousel-indicators">
-      @for (caseStudy of caseStudies(); track $index) {
-        <button
-          class="carousel-indicator"
-          [class.active]="currentIndex() === $index"
-          (click)="goToSlide($index)"
-          [attr.aria-label]="'Go to case study ' + ($index + 1)">
-        </button>
-      }
     </div>
   </div>
 </section>

@@ -116,7 +116,6 @@
       background-color: #ffffff;
       border-radius: 12px;
       overflow: hidden;
-      border-left: 3px solid var(--accent-color);
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
@@ -130,6 +129,7 @@
         height: 150px;
         overflow: hidden;
         position: relative;
+        border-bottom: 3px solid var(--accent-color);
 
         img {
           width: 100%;

@@ -105,4 +105,8 @@ export class ScrollNavComponent implements OnInit, OnDestroy {
   protected isActive(sectionId: string): boolean {
     return this.activeSection() === sectionId;
   }
+
+  protected scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }

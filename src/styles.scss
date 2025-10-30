@@ -9,12 +9,13 @@
 :root {
   --primary-color: #0f1419;
   --secondary-color: #1a2332;
-  --accent-color: #d4a574;
-  --accent-hover: #c89556;
+  --tertiary-color: #4d9d50;
+  --accent-color: #1d748e;
+  --accent-hover: #17637a;
   --text-primary: #1a1a1a;
   --text-secondary: #5a5a5a;
-  --text-light: #ffffff;
-  --text-muted: #8a8a8a;
+  --text-light: #e0e0e0;
+  --text-muted: #444;
   --background-light: #faf9f7;
   --background-cream: #f5f3ef;
   --background-dark: #0f1419;
@@ -28,7 +29,11 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
   line-height: 1.7;
   color: var(--text-primary);
   background-color: #ffffff;
@@ -120,7 +125,7 @@ button {
 
 .btn-primary {
   background-color: var(--accent-color);
-  color: var(--primary-color);
+  color: var(--text-light);
   font-weight: 700;
 }
 
@@ -128,18 +133,18 @@ button {
   background-color: var(--accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(212, 165, 116, 0.25);
-  color: #222;
+  color: var(--text-light);
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: var(--text-light);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
+  border: 2px solid rgb(121 121 121)
 }
 
 .btn-secondary:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--text-light);
+  border-color: var(--accent-hover);
 }
 
 section {
@@ -152,7 +157,7 @@ section {
   display: inline-block;
   font-size: clamp(2rem, 4vw, 3.25rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.4;
   letter-spacing: -0.03em;
   color: var(--primary-color);
 

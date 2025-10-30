@@ -1,5 +1,5 @@
 .hero {
-  background: var(--background-dark);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(209, 209, 209, 0.34) 50%);
   color: var(--text-light);
   padding: clamp(8rem, 15vw, 12rem) 0 clamp(6rem, 12vw, 10rem);
   min-height: 85vh;
@@ -16,6 +16,12 @@
     height: 100%;
     z-index: 0;
 
+    video {
+      position: absolute;
+      z-index: 0;
+      width: 100%;
+    }
+
     .hero-bg-image {
       width: 100%;
       height: 100%;
@@ -30,11 +36,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      135deg,
-      rgba(15, 20, 25, 0.95) 0%,
-      rgba(15, 20, 25, 0.85) 100%
-    );
+    background: linear-gradient(to right, #ffffffa3 0%, white 50%, #ffffff96 100%);
   }
 
   .hero-gradient {
@@ -43,11 +45,9 @@
     right: 0;
     width: 60%;
     height: 100%;
-    background: radial-gradient(
-      ellipse at top right,
-      rgba(212, 165, 116, 0.12) 0%,
-      transparent 60%
-    );
+    background: radial-gradient(ellipse at top right,
+        rgba(212, 165, 116, 0.12) 0%,
+        transparent 60%);
     pointer-events: none;
     z-index: 1;
   }
@@ -70,16 +70,23 @@
   }
 
   .hero-title {
-    color: var(--text-light);
+    color: var(--text-muted);
     margin-bottom: 2rem;
     font-size: clamp(2.75rem, 6vw, 5.5rem);
-    font-weight: 800;
+    font-weight: 100;
     line-height: 1.05;
     letter-spacing: -0.03em;
 
     .title-accent {
-      color: var(--accent-color);
+      background: linear-gradient(90deg, #1d748e 20%, rgb(23 133 27) 75%);
+      /* background-clip: text; */
+      -webkit-background-clip: text;
+      color: transparent;
       display: inline-block;
+    }
+
+    .title-tertiary {
+      color: var(--tertiary-color);
     }
   }
 
@@ -87,7 +94,7 @@
     font-size: clamp(1.125rem, 2vw, 1.375rem);
     line-height: 1.7;
     margin-bottom: 3rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: #333;
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
@@ -107,7 +114,7 @@
 
     .trust-text {
       font-size: 0.9375rem;
-      color: rgba(255, 255, 255, 0.6);
+      color: #818080;
       margin: 0;
       font-weight: 500;
     }

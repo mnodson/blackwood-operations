@@ -2,7 +2,7 @@
   <div class="container">
     <div class="nav-content">
       <a routerLink="/" class="brand">
-        <span class="brand-name">Blackwood Operations</span>
+        <img src="media/Logo_Transparent.png">
       </a>
 
       <button
@@ -30,14 +30,14 @@
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()" class="nav-link">
           Home
         </a>
-        <a routerLink="/leadership" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link">
-          Leadership
-        </a>
         <a href="#services" (click)="closeMobileMenu()" class="nav-link">
           Services
         </a>
         <a href="#case-studies" (click)="closeMobileMenu()" class="nav-link">
           Case Studies
+        </a>
+        <a routerLink="/leadership" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link">
+          Leadership
         </a>
         <a routerLink="/contact" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link nav-link-cta">
           Contact

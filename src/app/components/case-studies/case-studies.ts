@@ -43,9 +43,16 @@ export class CaseStudiesComponent implements OnInit, OnDestroy {
   protected readonly isPaused = signal(false);
 
   protected readonly totalSlides = computed(() => this.caseStudies().length);
-  protected readonly translateX = computed(() => `translateX(-${this.currentIndex() * 100}%)`);
+  protected readonly translateX = computed(() => {
+    const index = this.currentIndex();
+    // Each card is 100% width + 2rem gap, so we calculate the total offset
+    return `translateX(calc(-${index * 100}% - ${index * 2}rem))`;
+  });
 
   private autoPlayInterval?: ReturnType<typeof setInterval>;
+  private touchStartX = 0;
+  private touchEndX = 0;
+  private readonly swipeThreshold = 50; // Minimum distance for a swipe
 
   ngOnInit() {
     this.startAutoPlay();
@@ -109,8 +116,41 @@ export class CaseStudiesComponent implements OnInit, OnDestroy {
     this.isAnimating.set(true);
     this.currentIndex.set(targetIndex);
 
+    this.stopAutoPlay();
+    this.startAutoPlay();
+
     setTimeout(() => {
       this.isAnimating.set(false);
     }, 500);
+  }
+
+  protected onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+    this.pauseAutoPlay();
+  }
+
+  protected onTouchMove(event: TouchEvent) {
+    this.touchEndX = event.touches[0].clientX;
+  }
+
+  protected onTouchEnd() {
+    this.handleSwipe();
+    this.resumeAutoPlay();
+  }
+
+  private handleSwipe() {
+    const swipeDistance = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(swipeDistance) < this.swipeThreshold) {
+      return; // Not a significant swipe
+    }
+
+    if (swipeDistance > 0) {
+      // Swiped left - go to next slide
+      this.nextSlide();
+    } else {
+      // Swiped right - go to previous slide
+      this.previousSlide();
+    }
   }
 }
