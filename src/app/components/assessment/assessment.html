@@ -1,0 +1,137 @@
+<section id="assessment" class="assessment">
+  <div class="container">
+    <!-- Intro State -->
+    @if (!quizStarted()) {
+      <div class="assessment-intro">
+        <div class="intro-badge">
+          <span class="material-symbols-outlined">quiz</span>
+          <span>Free Assessment</span>
+        </div>
+        <h2 class="section-title section-title-on-dark">How Healthy Are Your Operations?</h2>
+        <p class="section-subtitle">
+          Take our 2-minute assessment to discover your operational maturity level
+          and get personalized recommendations for improvement.
+        </p>
+        <div class="intro-features">
+          <div class="feature">
+            <span class="material-symbols-outlined">timer</span>
+            <span>2 minutes</span>
+          </div>
+          <div class="feature">
+            <span class="material-symbols-outlined">checklist</span>
+            <span>7 questions</span>
+          </div>
+          <div class="feature">
+            <span class="material-symbols-outlined">insights</span>
+            <span>Instant results</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-large" (click)="startQuiz()">
+          Start Assessment
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+    }
+
+    <!-- Quiz State -->
+    @if (quizStarted() && !showResults()) {
+      <div class="assessment-quiz">
+        <!-- Progress Bar -->
+        <div class="quiz-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progress()"></div>
+          </div>
+          <div class="progress-text">
+            Question {{ currentQuestionIndex() + 1 }} of {{ questions().length }}
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card" [class.animating]="isAnimating()">
+          <div class="question-category">
+            <span class="material-symbols-outlined">{{ currentQuestion().icon }}</span>
+            <span>{{ currentQuestion().category }}</span>
+          </div>
+          <h3 class="question-text">{{ currentQuestion().question }}</h3>
+
+          <div class="options-list">
+            @for (option of currentQuestion().options; track option.text; let i = $index) {
+              <button
+                class="option-btn"
+                [class.selected]="answers().get(currentQuestion().id) === option.score"
+                (click)="selectAnswer(option.score)">
+                <span class="option-indicator">{{ ['A', 'B', 'C', 'D'][i] }}</span>
+                <span class="option-text">{{ option.text }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="quiz-nav">
+          @if (currentQuestionIndex() > 0) {
+            <button class="btn btn-secondary btn-nav" (click)="previousQuestion()">
+              <span class="material-symbols-outlined">arrow_back</span>
+              Previous
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Results State -->
+    @if (showResults()) {
+      <div class="assessment-results">
+        <div class="results-header">
+          <div class="score-ring" [style.--score-color]="result().color">
+            <svg viewBox="0 0 100 100">
+              <circle class="score-bg" cx="50" cy="50" r="45" />
+              <circle
+                class="score-progress"
+                cx="50" cy="50" r="45"
+                [style.stroke-dashoffset]="283 - (283 * scorePercentage() / 100)"
+                [style.stroke]="result().color" />
+            </svg>
+            <div class="score-value">
+              <span class="score-number">{{ scorePercentage() }}</span>
+              <span class="score-label">Score</span>
+            </div>
+          </div>
+
+          <div class="results-title">
+            <div class="result-level" [style.color]="result().color">
+              {{ result().level | titlecase }}
+            </div>
+            <h3>{{ result().title }}</h3>
+            <p>{{ result().summary }}</p>
+          </div>
+        </div>
+
+        <div class="results-breakdown">
+          <h4>Your Personalized Recommendations</h4>
+          <div class="recommendations-list">
+            @for (rec of result().recommendations; track rec; let i = $index) {
+              <div class="recommendation-item">
+                <span class="rec-number">{{ i + 1 }}</span>
+                <span class="rec-text">{{ rec }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="results-cta">
+          <p>Ready to transform your operations?</p>
+          <div class="cta-buttons">
+            <a routerLink="/contact" class="btn btn-primary">
+              Discuss Your Results
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
+            <button class="btn btn-secondary" (click)="restartQuiz()">
+              Retake Assessment
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

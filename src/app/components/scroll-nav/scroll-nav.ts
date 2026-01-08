@@ -23,6 +23,7 @@ export class ScrollNavComponent implements OnInit, AfterViewInit, OnDestroy {
     { id: 'about', label: 'About' },
     { id: 'services', label: 'Services' },
     { id: 'case-studies', label: 'Case Studies' },
+    { id: 'assessment', label: 'Free Assessment' },
     { id: 'testimonials', label: 'Testimonials' }
   ]);
 
