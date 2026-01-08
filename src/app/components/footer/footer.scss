@@ -11,10 +11,10 @@
   }
 
   .footer-brand {
-    .brand-name {
-      color: var(--text-light);
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
+    .brand-logo {
+      max-width: 220px;
+      height: auto;
+      margin-bottom: 1rem;
     }
 
     .brand-tagline {

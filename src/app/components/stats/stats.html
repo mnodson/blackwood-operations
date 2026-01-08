@@ -1,14 +1,58 @@
-<section class="stats">
+<section class="stats" [class.animate]="isVisible()">
   <div class="container">
     <div class="stats-grid">
-      @for (stat of stats(); track stat.label) {
-        <div class="stat-item">
-          <div class="stat-value">
-            {{ stat.value }}<span class="stat-suffix">{{ stat.suffix }}</span>
-          </div>
-          <div class="stat-label">{{ stat.label }}</div>
+      <div class="metric-card">
+        <div class="metric-visual">
+          <svg class="sparkline" viewBox="0 0 100 40" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(212, 165, 116, 0.4)"/>
+                <stop offset="100%" stop-color="rgba(212, 165, 116, 0)"/>
+              </linearGradient>
+            </defs>
+            <path class="sparkline-fill" d="M0,35 L15,30 L30,32 L45,25 L60,20 L75,12 L90,8 L100,5 L100,40 L0,40 Z" fill="url(#sparkGradient1)"/>
+            <path class="sparkline-line" d="M0,35 L15,30 L30,32 L45,25 L60,20 L75,12 L90,8 L100,5" fill="none" stroke="var(--accent-color)" stroke-width="2"/>
+            <circle class="sparkline-dot" cx="100" cy="5" r="3" fill="var(--accent-color)"/>
+          </svg>
         </div>
-      }
+        <div class="metric-content">
+          <span class="metric-value">{{ animatedValues()[0] }}</span>
+          <span class="metric-label">Change Adoption Rate</span>
+          <span class="metric-context">vs. 34% industry average</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-visual">
+          <svg class="bar-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+            <rect class="bar bar-1" x="5" y="28" width="12" height="12" rx="2" fill="rgba(212, 165, 116, 0.3)"/>
+            <rect class="bar bar-2" x="22" y="22" width="12" height="18" rx="2" fill="rgba(212, 165, 116, 0.4)"/>
+            <rect class="bar bar-3" x="39" y="16" width="12" height="24" rx="2" fill="rgba(212, 165, 116, 0.5)"/>
+            <rect class="bar bar-4" x="56" y="10" width="12" height="30" rx="2" fill="rgba(212, 165, 116, 0.7)"/>
+            <rect class="bar bar-5" x="73" y="4" width="12" height="36" rx="2" fill="var(--accent-color)"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <span class="metric-value">{{ animatedValues()[1] }}</span>
+          <span class="metric-label">Faster Time-to-Value</span>
+          <span class="metric-context">Accelerated implementation cycles</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-visual">
+          <svg class="progress-ring" viewBox="0 0 50 50">
+            <circle class="ring-bg" cx="25" cy="25" r="20" fill="none" stroke="rgba(212, 165, 116, 0.2)" stroke-width="4"/>
+            <circle class="ring-progress" cx="25" cy="25" r="20" fill="none" stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 126" transform="rotate(-90 25 25)"/>
+            <text x="25" y="28" text-anchor="middle" class="ring-text" fill="var(--accent-color)" font-size="12" font-weight="600">↑</text>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <span class="metric-value">{{ animatedValues()[2] }}</span>
+          <span class="metric-label">Avg. Risk Mitigation</span>
+          <span class="metric-context">Per enterprise engagement</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>

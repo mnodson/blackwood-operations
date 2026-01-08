@@ -5,16 +5,51 @@
       Hear from leaders who've transformed their operations with Blackwood Operations
     </p>
 
-    <div class="testimonials-grid">
-      @for (testimonial of testimonials(); track testimonial.author) {
+    <!-- Desktop Grid View -->
+    <div class="testimonials-grid desktop-only">
+      @for (testimonial of testimonials(); track testimonial) {
         <div class="testimonial-card">
           <div class="quote-icon">"</div>
           <blockquote class="testimonial-quote">
             {{ testimonial.quote }}
           </blockquote>
           <div class="testimonial-author">
-            <div class="author-name">{{ testimonial.author }}</div>
             <div class="author-title">{{ testimonial.title }}, {{ testimonial.company }}</div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Mobile Expandable View -->
+    <div class="testimonials-mobile mobile-only">
+      @for (testimonial of testimonials(); track testimonial; let i = $index) {
+        <div class="testimonial-accordion" [class.expanded]="expandedIndex() === i">
+          <button
+            type="button"
+            class="testimonial-trigger"
+            (click)="toggleExpand(i)"
+            [attr.aria-expanded]="expandedIndex() === i">
+            <div class="trigger-content">
+              <span class="material-symbols-outlined trigger-icon">{{ testimonial.icon }}</span>
+              <div class="trigger-info">
+                <span class="trigger-title">{{ testimonial.title }}</span>
+                <span class="trigger-company">{{ testimonial.company }}</span>
+              </div>
+            </div>
+            <div class="trigger-action">
+              <span class="trigger-label">{{ expandedIndex() === i ? 'Hide' : 'Read' }}</span>
+              <span class="material-symbols-outlined trigger-arrow">
+                {{ expandedIndex() === i ? 'expand_less' : 'expand_more' }}
+              </span>
+            </div>
+          </button>
+          <div class="testimonial-content">
+            <div class="content-inner">
+              <div class="quote-mark">"</div>
+              <blockquote class="mobile-quote">
+                {{ testimonial.quote }}
+              </blockquote>
+            </div>
           </div>
         </div>
       }

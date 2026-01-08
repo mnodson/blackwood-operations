@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, signal, effect, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, signal, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 interface NavSection {
@@ -13,7 +13,7 @@ interface NavSection {
   styleUrl: './scroll-nav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScrollNavComponent implements OnInit, OnDestroy {
+export class ScrollNavComponent implements OnInit, AfterViewInit, OnDestroy {
   private document = inject(DOCUMENT);
 
   protected readonly isVisible = signal(false);
@@ -31,7 +31,11 @@ export class ScrollNavComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setupScrollListener();
-    this.setupIntersectionObserver();
+  }
+
+  ngAfterViewInit(): void {
+    // Delay observer setup to ensure all sibling components are rendered
+    setTimeout(() => this.setupIntersectionObserver(), 100);
   }
 
   ngOnDestroy(): void {
@@ -108,5 +112,6 @@ export class ScrollNavComponent implements OnInit, OnDestroy {
 
   protected scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.location.hash = '';
   }
 }

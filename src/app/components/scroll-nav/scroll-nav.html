@@ -1,12 +1,8 @@
 <nav class="scroll-nav" [class.visible]="isVisible()">
   <div class="scroll-nav-items">
-    <button
-      class="scroll-nav-item back-to-top"
-      (click)="scrollToTop()"
-      aria-label="Back to top">
-      <span class="nav-indicator top-indicator">↑</span>
-      <span class="nav-label">Top</span>
-    </button>
+    <div class="nav-logo">
+      <img src="media/Logo_Transparent.png" alt="Blackwood Operations">
+    </div>
 
     <div class="nav-divider"></div>
 
@@ -21,5 +17,15 @@
         <span class="nav-label">{{ section.label }}</span>
       </button>
     }
+
+    <div class="nav-divider"></div>
+
+    <button
+      class="scroll-nav-item back-to-top"
+      (click)="scrollToTop()"
+      aria-label="Back to top">
+      <span class="nav-indicator top-indicator">↑</span>
+      <span class="nav-label">Top</span>
+    </button>
   </div>
 </nav>

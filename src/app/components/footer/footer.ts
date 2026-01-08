@@ -23,7 +23,7 @@ export class FooterComponent {
     },
     {
       name: 'Donna Nodson - LinkedIn',
-      url: 'https://www.linkedin.com/in/donna-nodson',
+      url: 'https://www.linkedin.com/in/donnanodson/',
       icon: 'linkedin-personal'
     }
   ]);
