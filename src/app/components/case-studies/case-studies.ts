@@ -18,22 +18,22 @@ export class CaseStudiesComponent implements OnInit, OnDestroy {
   protected readonly caseStudies = signal<CaseStudy[]>([
     {
       title: 'Scaled a Growing Law Firm',
-      description: 'Acted as a fractional COO to support a fast-growing law firm that tripled in size by leading operational transformation. Delivered scalable process design, workflow automation across key platforms, vendor portfolio management, and a strategic project roadmap aligned with growth goals.',
+      description: 'Served as fractional COO for a rapidly expanding law firm, leading an operational transformation that supported a threefold increase in size and revenue. Delivered scalable process design, workflow automation across key platforms, vendor portfolio management, and a strategic project roadmap aligned with growth goals.',
       image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&auto=format&fit=crop&q=80'
     },
     {
       title: 'HITRUST Certification for Healthcare Exchange',
-      description: 'Led a successful HITRUST r2 assessment for a healthcare exchange amid organizational challenges and delays. Stabilized the project post-crisis, drove accountability, and ensured compliance under tight regulatory deadlines.',
+      description: 'Led a successful HITRUST r2 assessment for a healthcare exchange navigating organizational challenges and delays. Stabilized the project through the crisis, drove accountability, and ensured compliance under tight regulatory deadlines.',
       image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=80'
     },
     {
       title: 'Strategic Advisory for Investment Bank',
-      description: 'Collaborated with a boutique investment bank serving startups to develop go-to-market and fundraising strategies. Developed investor-ready pitch decks, refined business models, and supported executive communications to secure funding.',
+      description: 'Partnered with a boutique investment bank serving startups to develop go‑to‑market strategies and strengthen fundraising positioning. Developed investor-ready pitch decks, refined business models, and supported executive communications to secure funding.',
       image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80'
     },
     {
       title: 'Fractional COO for Tech Services Firm',
-      description: 'Partnered with a mid-stage tech services company facing operational strain. Established KPIs, implemented a lean PMO, aligned cross-functional teams, and streamlined client onboarding, reducing delivery timelines by 30% and boosting accountability.',
+      description: 'Collaborated with leadership at a mid-stage technology services company facing operational strain. Established KPIs, implemented a lean PMO, aligned cross-functional teams, and streamlined client onboarding, reducing delivery timelines by 30% and boosting accountability.',
       image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80'
     }
   ]);

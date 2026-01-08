@@ -60,6 +60,11 @@ export class ServicesComponent implements OnInit, AfterViewInit, OnDestroy {
       description: 'Establish lean PMOs, align cross-functional teams, and deliver results on time.',
       icon: 'task_alt',
       highlight: 'Delivery'
+    },{
+      title: 'HITRUST & SOC 2',
+      description: 'Internal project leadership for clients during HITRUST (e1/ i1/ r2) and SOC 2 Type II assessments.',
+      icon: 'assured_workload',
+      highlight: 'Security'
     }
   ]);
 

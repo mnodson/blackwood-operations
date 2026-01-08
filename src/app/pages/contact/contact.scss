@@ -13,6 +13,10 @@
     font-weight: 800;
     margin-bottom: 1.5rem;
     line-height: 1.1;
+    background: linear-gradient(135deg, #4e8d9c 0%, #6cb8c7 50%, #011518 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .page-subtitle {
@@ -278,7 +282,7 @@
 
   .calendly-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 
     .section-title {
       font-size: clamp(2rem, 3.5vw, 2.5rem);
@@ -293,6 +297,92 @@
       max-width: 700px;
       margin: 0 auto;
       line-height: 1.7;
+    }
+  }
+
+  .contact-options-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 360px;
+
+    &:hover {
+      background-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+      .option-icon {
+        background-color: var(--accent-color);
+        color: #ffffff;
+      }
+
+      .option-label {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .option-value {
+        color: #ffffff;
+      }
+    }
+
+    .option-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      border-radius: 10px;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .option-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+
+    .option-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+
+    .option-value {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--primary-color);
+      transition: color 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -336,7 +426,19 @@
     padding: clamp(3rem, 6vw, 4rem) 0;
 
     .calendly-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-options-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
       margin-bottom: 2rem;
+    }
+
+    .contact-option {
+      width: 100%;
+      max-width: 100%;
     }
   }
 }
