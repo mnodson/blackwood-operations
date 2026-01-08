@@ -1,108 +1,325 @@
 .services {
-  background-color: #ffffff;
+  background-color: var(--background-light);
+  overflow: hidden;
+
+  .services-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
 
   .section-title {
-    text-align: center;
     color: var(--primary-color);
     margin-bottom: 1rem;
     font-size: clamp(2.25rem, 4vw, 3.25rem);
   }
 
   .section-subtitle {
-    text-align: center;
     font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
     color: var(--text-secondary);
-    margin-bottom: 4rem;
-    max-width: 700px;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+}
+
+// Journey container
+.services-journey {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+// Winding SVG path
+.journey-path {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+
+  .path-track,
+  .path-progress {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .path-track {
+    stroke: rgba(0, 0, 0, 0.08);
+  }
+
+  .path-progress {
+    stroke: var(--accent-color);
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 0.15s ease-out;
+  }
+}
+
+// Milestones container
+.milestones-container {
+  position: relative;
+  z-index: 2;
+}
+
+// Individual milestone
+.milestone {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 2.5rem 0;
+  position: relative;
+
+  // Default: card on left, marker in middle area
+  .milestone-card {
+    flex: 1;
+    max-width: 420px;
     margin-left: auto;
-    margin-right: auto;
   }
 
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 2.5rem;
-    margin-top: 4rem;
+  .milestone-marker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .service-card {
-    background-color: var(--background-light);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid var(--border-color);
+  // Position markers along the winding path
+  // Odd items (1st, 3rd, 5th) curve right
+  &:nth-child(odd) .milestone-marker {
+    left: calc(50% + 18px);
+  }
 
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-      border-color: var(--accent-color);
+  // Even items (2nd, 4th, 6th) curve left
+  &:nth-child(even) .milestone-marker {
+    left: calc(50% - 18px);
+  }
+
+  // Right-aligned milestones (cards on left side)
+  &.milestone-right {
+    .milestone-card {
+      margin-left: 0;
+      margin-right: auto;
+    }
+  }
+
+  // Animation states - visible by default, enhanced when .visible is added
+  opacity: 1;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.visible {
+    .milestone-marker {
+      transform: translateX(-50%) scale(1);
     }
 
-    .service-image {
-      width: 100%;
-      height: 220px;
-      overflow: hidden;
-      position: relative;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.05) 100%);
-      }
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        object-position: 50% 20%;
-      }
-    }
-
-    &:hover .service-image img {
-      transform: scale(1.08);
-    }
-
-    .service-content {
-      padding: 2rem 1.75rem;
-    }
-
-    .service-title {
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-      font-size: clamp(1.25rem, 1.5vw, 1.4rem);
-      font-weight: 600;
-    }
-
-    .service-description {
-      color: var(--text-secondary);
-      line-height: 1.7;
-      margin-bottom: 0;
-      font-size: 1rem;
+    .milestone-card {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     }
   }
 }
 
-@media (max-width: 768px) {
-  .services {
-    .services-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+// Milestone marker (icon badge)
+.milestone-marker {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a365d 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 4px #ffffff;
+  z-index: 3;
+
+  .material-symbols-outlined {
+    font-size: 1.75rem;
+    color: #ffffff;
+  }
+}
+
+// Milestone card
+.milestone-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+
+    &::before {
+      opacity: 1;
     }
 
-    .service-card {
-      .service-image {
-        height: 200px;
-      }
+    .card-highlight {
+      color: var(--accent-color);
+    }
+  }
 
-      .service-content {
-        padding: 1.5rem 1.25rem;
-      }
+  .card-highlight {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    transition: color 0.3s ease;
+  }
+
+  .card-title {
+    color: var(--primary-color);
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .card-description {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+}
+
+// Responsive: Tablet
+@media (max-width: 900px) {
+  .services-journey {
+    padding-left: 2rem;
+  }
+
+  .journey-path {
+    left: 32px;
+    width: 60px;
+    transform: none;
+  }
+
+  .milestone {
+    gap: 2rem;
+    padding: 2rem 0;
+
+    .milestone-card {
+      max-width: none;
+      margin-left: 70px !important;
+      margin-right: 0 !important;
+    }
+
+    // Reset marker positions for linear layout on tablet
+    &:nth-child(odd) .milestone-marker,
+    &:nth-child(even) .milestone-marker {
+      left: 32px;
+    }
+
+    .milestone-marker {
+      transform: translateX(-50%);
+    }
+
+    &.milestone-right .milestone-card {
+      margin-left: 70px !important;
+    }
+  }
+
+  .milestone-marker {
+    width: 56px;
+    height: 56px;
+
+    .material-symbols-outlined {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// Responsive: Mobile
+@media (max-width: 600px) {
+  .services {
+    .services-header {
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  .services-journey {
+    padding-left: 1rem;
+  }
+
+  .journey-path {
+    left: 0;
+    width: 48px;
+
+    .path-track,
+    .path-progress {
+      stroke-width: 2;
+    }
+  }
+
+  .milestone {
+    gap: 1rem;
+    padding: 1.25rem 0;
+
+    .milestone-card {
+      margin-left: 52px !important;
+    }
+
+    // Reset marker positions for linear layout on mobile
+    &:nth-child(odd) .milestone-marker {
+      left: 15px;   
+    }
+    &:nth-child(even) .milestone-marker {
+      left: 3px;
+    }
+
+    &.milestone-right .milestone-card {
+      margin-left: 52px !important;
+    }
+  }
+
+  .milestone-marker {
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12), 0 0 0 3px #ffffff;
+
+    .material-symbols-outlined {
+      font-size: 1.25rem;
+    }
+  }
+
+  .milestone-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+
+    .card-highlight {
+      font-size: 0.6875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-description {
+      font-size: 0.9375rem;
+      line-height: 1.65;
     }
   }
 }

@@ -35,7 +35,7 @@ export class ScrollNavComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     // Delay observer setup to ensure all sibling components are rendered
-    setTimeout(() => this.setupIntersectionObserver(), 100);
+    setTimeout(() => this.setupIntersectionObserver(), 300);
   }
 
   ngOnDestroy(): void {
@@ -69,8 +69,8 @@ export class ScrollNavComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupIntersectionObserver(): void {
     const options = {
       root: null,
-      rootMargin: '-30% 0px -30% 0px',
-      threshold: 0
+      rootMargin: '-20% 0px -20% 0px',
+      threshold: 0.1
     };
 
     this.intersectionObserver = new IntersectionObserver((entries) => {

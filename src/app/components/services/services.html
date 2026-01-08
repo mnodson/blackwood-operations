@@ -1,26 +1,41 @@
 <section id="services" class="services">
   <div class="container">
-    <h2 class="section-title section-title-centered">Our Expertise</h2>
-    <p class="section-subtitle">
-      Comprehensive operational support across all stages of growth
-    </p>
-    <div class="services-grid">
-      @for (service of services(); track service.title) {
-        <div class="service-card">
-          <div class="service-image">
-            <img
-              [ngSrc]="service.image"
-              [alt]="service.title"
-              width="400"
-              height="250"
-              priority />
+    <div class="services-header">
+      <h2 class="section-title section-title-centered">Our Expertise</h2>
+      <p class="section-subtitle">
+        Key milestones on your path to operational excellence — explore any that resonate with your needs
+      </p>
+    </div>
+
+    <div class="services-journey">
+      <!-- Winding path SVG -->
+      <svg class="journey-path" viewBox="0 0 100 600" preserveAspectRatio="none">
+        <path class="path-track" d="M50 0 Q80 50 50 100 Q20 150 50 200 Q80 250 50 300 Q20 350 50 400 Q80 450 50 500 Q20 550 50 600" />
+        <path class="path-progress" d="M50 0 Q80 50 50 100 Q20 150 50 200 Q80 250 50 300 Q20 350 50 400 Q80 450 50 500 Q20 550 50 600" [style.stroke-dashoffset]="(1 - lineProgress()) * 1000" />
+      </svg>
+
+      <div class="milestones-container">
+        @for (service of services(); track service.title; let i = $index; let isOdd = $odd) {
+          <div
+            class="milestone"
+            [class.milestone-right]="isOdd"
+            [class.visible]="isVisible(i)"
+            [attr.data-index]="i">
+
+            <!-- Milestone marker -->
+            <div class="milestone-marker">
+              <span class="material-symbols-outlined">{{ service.icon }}</span>
+            </div>
+
+            <!-- Milestone card -->
+            <div class="milestone-card">
+              <div class="card-highlight">{{ service.highlight }}</div>
+              <h3 class="card-title">{{ service.title }}</h3>
+              <p class="card-description">{{ service.description }}</p>
+            </div>
           </div>
-          <div class="service-content">
-            <h3 class="service-title">{{ service.title }}</h3>
-            <p class="service-description">{{ service.description }}</p>
-          </div>
-        </div>
-      }
+        }
+      </div>
     </div>
   </div>
 </section>

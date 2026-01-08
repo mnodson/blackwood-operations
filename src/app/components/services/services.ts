@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, OnInit, OnDestroy, AfterViewInit, ElementRef, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 
 interface Service {
   title: string;
   description: string;
-  image: string;
+  icon: string;
+  highlight: string;
 }
 
 @Component({
@@ -14,37 +15,119 @@ interface Service {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgOptimizedImage]
 })
-export class ServicesComponent {
+export class ServicesComponent implements OnInit, AfterViewInit, OnDestroy {
+  private elementRef = inject(ElementRef);
+
+  protected readonly visibleItems = signal<Set<number>>(new Set());
+  protected readonly lineProgress = signal(0);
+
+  private intersectionObserver?: IntersectionObserver;
+  private scrollListener?: () => void;
+
   protected readonly services = signal<Service[]>([
     {
       title: 'Process Design',
       description: 'Streamline operations with scalable, efficient processes tailored to your business needs.',
-      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&auto=format&fit=crop&q=80'
+      icon: 'design_services',
+      highlight: 'Foundation'
     },
     {
       title: 'Compliance & Risk Management',
       description: 'Navigate regulatory requirements and mitigate risks with expert guidance and implementation.',
-      image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&auto=format&fit=crop&q=80'
+      icon: 'verified_user',
+      highlight: 'Protection'
     },
     {
       title: 'Technology Integration',
       description: 'Optimize your tech stack and workflows to drive efficiency and support growth.',
-      image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80'
+      icon: 'hub',
+      highlight: 'Innovation'
     },
     {
       title: 'Fractional COO Services',
       description: 'Access senior operational leadership on-demand, without the full-time commitment.',
-      image: 'https://images.unsplash.com/photo-1614786269829-d24616faf56d?w=800&auto=format&fit=crop&q=80'
+      icon: 'supervisor_account',
+      highlight: 'Leadership'
     },
     {
       title: 'Strategic Advisory',
       description: 'Develop go-to-market strategies, refine business models, and secure funding with expert support.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80'
+      icon: 'insights',
+      highlight: 'Growth'
     },
     {
       title: 'Project Management',
       description: 'Establish lean PMOs, align cross-functional teams, and deliver results on time.',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&auto=format&fit=crop&q=80'
+      icon: 'task_alt',
+      highlight: 'Delivery'
     }
   ]);
+
+  ngOnInit(): void {
+    this.setupScrollListener();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.setupIntersectionObserver(), 100);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
+  }
+
+  private setupScrollListener(): void {
+    this.scrollListener = () => {
+      const section = this.elementRef.nativeElement.querySelector('.services-journey');
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const sectionTop = rect.top;
+      const sectionHeight = rect.height;
+      const windowHeight = window.innerHeight;
+
+      // Calculate progress through the section
+      const start = windowHeight * 0.8;
+      const end = -sectionHeight + windowHeight * 0.2;
+      const progress = Math.min(1, Math.max(0, (start - sectionTop) / (start - end)));
+
+      this.lineProgress.set(progress);
+    };
+
+    window.addEventListener('scroll', this.scrollListener, { passive: true });
+  }
+
+  private setupIntersectionObserver(): void {
+    const options = {
+      root: null,
+      rootMargin: '-10% 0px -10% 0px',
+      threshold: 0.2
+    };
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
+        if (entry.isIntersecting) {
+          this.visibleItems.update(set => {
+            const newSet = new Set(set);
+            newSet.add(index);
+            return newSet;
+          });
+        }
+      });
+    }, options);
+
+    const items = this.elementRef.nativeElement.querySelectorAll('.milestone');
+    items.forEach((item: Element) => {
+      this.intersectionObserver!.observe(item);
+    });
+  }
+
+  protected isVisible(index: number): boolean {
+    return this.visibleItems().has(index);
+  }
 }
