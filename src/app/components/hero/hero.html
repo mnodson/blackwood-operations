@@ -1,13 +1,16 @@
 <section class="hero">
   <div class="hero-background">
-   <video muted autoplay loop class="fillWidth">
-            <source src="media/hero.mp4" type="video/webm"/>
+   <video muted autoplay loop oncanplay="this.play()" onloadedmetadata="this.muted = true">
+            <source src="media/hero.mp4" type="video/mp4"/>
             Your browser does not support the video tag. I suggest you upgrade your browser.
         </video>
     <div class="hero-overlay"></div>
   </div>
   <div class="container">
     <div class="hero-content">
+      <div class="hero-mobile-logo" [style.opacity]="logoOpacity()">
+        <img src="media/Logo_Transparent.png" alt="Blackwood Operations">
+      </div>
       <div class="hero-eyebrow">Operational Excellence, On Demand</div>
       <h1 class="hero-title">
         Transform Complexity<br>

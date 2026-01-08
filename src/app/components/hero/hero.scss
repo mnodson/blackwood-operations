@@ -60,6 +60,10 @@
     z-index: 2;
   }
 
+  .hero-mobile-logo {
+    display: none;
+  }
+
   .hero-eyebrow {
     font-size: 0.875rem;
     font-weight: 600;
@@ -136,7 +140,7 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: clamp(6rem, 12vw, 8rem) 0 clamp(4rem, 8vw, 6rem);
+    padding: clamp(4rem, 10vw, 6rem) 0 clamp(4rem, 8vw, 6rem);
     height: 100vh;
 
     .hero-background {
@@ -146,6 +150,20 @@
       }
     }
 
+    .hero-mobile-logo {
+      display: block;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: opacity 0.1s ease-out;
+
+      img {
+        width: auto;
+        max-width: 60%;
+        height: auto;
+        background: #000;
+        padding: 10px;
+      }
+    }
 
     .hero-eyebrow {
       font-size: 0.8125rem;
@@ -155,6 +173,7 @@
       .hero-content {
         .hero-title {
           font-weight: 200;
+          font-size: 2.3rem;
         }
       }
     }
