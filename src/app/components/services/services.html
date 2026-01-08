@@ -9,9 +9,9 @@
 
     <div class="services-journey">
       <!-- Winding path SVG -->
-      <svg class="journey-path" viewBox="0 0 100 600" preserveAspectRatio="none">
-        <path class="path-track" d="M50 0 Q80 50 50 100 Q20 150 50 200 Q80 250 50 300 Q20 350 50 400 Q80 450 50 500 Q20 550 50 600" />
-        <path class="path-progress" d="M50 0 Q80 50 50 100 Q20 150 50 200 Q80 250 50 300 Q20 350 50 400 Q80 450 50 500 Q20 550 50 600" [style.stroke-dashoffset]="(1 - lineProgress()) * 1000" />
+      <svg class="journey-path" viewBox="0 0 100 700" preserveAspectRatio="none">
+        <path class="path-track" d="M50 0 Q95 50 50 100 Q5 150 50 200 Q95 250 50 300 Q5 350 50 400 Q95 450 50 500 Q5 550 50 600 Q95 650 50 700" />
+        <path class="path-progress" d="M50 0 Q95 50 50 100 Q5 150 50 200 Q95 250 50 300 Q5 350 50 400 Q95 450 50 500 Q5 550 50 600 Q95 650 50 700" [style.stroke-dashoffset]="(1 - lineProgress()) * 1000" />
       </svg>
 
       <div class="milestones-container">
@@ -29,9 +29,15 @@
 
             <!-- Milestone card -->
             <div class="milestone-card">
-              <div class="card-highlight">{{ service.highlight }}</div>
-              <h3 class="card-title">{{ service.title }}</h3>
-              <p class="card-description">{{ service.description }}</p>
+              <div class="card-header">
+                <div class="card-header-content">
+                  <div class="card-highlight">{{ service.highlight }}</div>
+                  <h3 class="card-title">{{ service.title }}</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="card-description">{{ service.description }}</p>
+              </div>
             </div>
           </div>
         }
