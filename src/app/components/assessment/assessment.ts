@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AssessmentResultState, QuestionResponse } from '../../models/assessment-result-state.interface';
 
 interface QuizOption {
   text: string;
@@ -28,9 +29,10 @@ interface AssessmentResult {
   templateUrl: './assessment.html',
   styleUrl: './assessment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TitleCasePipe]
+  imports: [TitleCasePipe]
 })
 export class AssessmentComponent {
+  private readonly router = inject(Router);
   protected readonly quizStarted = signal(false);
   protected readonly currentQuestionIndex = signal(0);
   protected readonly answers = signal<Map<string, number>>(new Map());
@@ -244,5 +246,37 @@ export class AssessmentComponent {
     this.showResults.set(false);
     this.currentQuestionIndex.set(0);
     this.answers.set(new Map());
+  }
+
+  protected navigateToContact(): void {
+    const responses: QuestionResponse[] = [];
+    const answersMap = this.answers();
+    const questions = this.questions();
+
+    for (const question of questions) {
+      const selectedScore = answersMap.get(question.id);
+      if (selectedScore !== undefined) {
+        const selectedOption = question.options.find(opt => opt.score === selectedScore);
+        responses.push({
+          questionId: question.id,
+          question: question.question,
+          category: question.category,
+          selectedScore,
+          selectedAnswer: selectedOption?.text ?? ''
+        });
+      }
+    }
+
+    const result = this.result();
+    const assessmentResult: AssessmentResultState = {
+      scorePercentage: this.scorePercentage(),
+      level: result.level,
+      title: result.title,
+      summary: result.summary,
+      recommendations: result.recommendations,
+      responses
+    };
+
+    this.router.navigate(['/contact'], { state: { assessmentResult } });
   }
 }

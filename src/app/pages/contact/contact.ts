@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CalendlyWidgetComponent } from '../../components/calendly-widget/calendly-widget';
+import { AssessmentResultState } from '../../models/assessment-result-state.interface';
 
 @Component({
   selector: 'app-contact',
@@ -14,6 +15,61 @@ export class ContactPage {
   protected readonly isSubmitting = signal(false);
   protected readonly submitSuccess = signal(false);
   protected readonly submitError = signal<string | null>(null);
+  protected readonly assessmentResult = signal<AssessmentResultState | null>(null);
+
+  protected readonly mailtoHref = computed(() => {
+    const result = this.assessmentResult();
+    if (!result) return 'mailto:donna@blackwoodops.com';
+
+    const subject = encodeURIComponent(`Operational Assessment Results - ${result.title}`);
+
+    let body = `Hi Donna,
+
+I completed the Operational Health Assessment and would like to discuss my results.
+
+ASSESSMENT RESULTS
+==================
+Score: ${result.scorePercentage}%
+Level: ${result.title}
+${result.summary}
+
+QUESTION RESPONSES
+==================`;
+
+    result.responses.forEach((response, index) => {
+      body += `
+${index + 1}. ${response.category}: ${response.question}
+   Answer: ${response.selectedAnswer}`;
+    });
+
+    body += `
+
+RECOMMENDATIONS
+===============`;
+    result.recommendations.forEach((rec, index) => {
+      body += `
+${index + 1}. ${rec}`;
+    });
+
+    body += `
+
+Looking forward to discussing how Blackwood Operations can help.`;
+
+    return `mailto:donna@blackwoodops.com?subject=${subject}&body=${encodeURIComponent(body)}`;
+  });
+
+  protected readonly calendlyPrefill = computed(() => {
+    const result = this.assessmentResult();
+    if (!result) return {};
+
+    const summary = `Assessment Score: ${result.scorePercentage}% (${result.title}). ${result.summary}`;
+
+    return {
+      customAnswers: {
+        a1: summary
+      }
+    };
+  });
 
   constructor(private fb: FormBuilder) {
     this.contactForm = this.fb.group({
@@ -22,6 +78,12 @@ export class ContactPage {
       company: ['', [Validators.required]],
       message: ['', [Validators.required, Validators.minLength(10)]]
     });
+
+    // Extract assessment result from router state
+    const state = history.state?.assessmentResult as AssessmentResultState | undefined;
+    if (state) {
+      this.assessmentResult.set(state);
+    }
   }
 
   protected onSubmit(): void {

@@ -17,7 +17,7 @@
         </p>
       </div>
       <div class="contact-options-row">
-        <a href="mailto:donna@blackwoodops.com" class="contact-option">
+        <a [href]="mailtoHref()" class="contact-option">
           <span class="option-icon material-symbols-outlined">mail</span>
           <div class="option-content">
             <div class="option-label">Email</div>
@@ -37,7 +37,7 @@
         </a>
       </div>
       <div class="calendly-container">
-        <app-calendly-widget />
+        <app-calendly-widget [prefill]="calendlyPrefill()" />
       </div>
     </div>
   </section>

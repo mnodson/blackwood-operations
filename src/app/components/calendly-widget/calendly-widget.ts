@@ -17,6 +17,7 @@ export class CalendlyWidgetComponent implements OnInit {
 
   readonly url = input<string>('https://calendly.com/donna-nodson/30min');
   readonly minHeight = input<string>('700px');
+  readonly prefill = input<Record<string, unknown>>({});
 
   ngOnInit(): void {
     this.initializeCalendly();
@@ -27,7 +28,7 @@ export class CalendlyWidgetComponent implements OnInit {
       window.Calendly.initInlineWidget({
         url: this.url(),
         parentElement: this.calendlyContainer.nativeElement,
-        prefill: {},
+        prefill: this.prefill(),
         utm: {}
       });
     } else {
