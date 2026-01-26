@@ -29,7 +29,7 @@ export class LeadershipComponent {
       name: 'Donna Nodson',
       title: 'Founder & Principal Consultant',
       location: 'Dual citizen (US & UK) – eligible to work seamlessly across both regions',
-      linkedIn: 'https://www.linkedin.com/in/donna-nodson',
+      linkedIn: 'https://www.linkedin.com/in/donnanodson/',
       bio: `With over 25 years of global operational leadership, Donna has built a career transforming companies — from high-growth startups to Fortune 500 enterprises — into disciplined, scalable, and high-performing organizations. Her experience spans SaaS, professional services, manufacturing, financial services, and retail, with a consistent focus on turning operational complexity into competitive advantage.
 
 A strategist and operator in equal measure, she's known for driving measurable impact: aligning vision to execution, building accountability into process, and delivering results under pressure. Whether leading a transformation, building infrastructure for scale, or optimizing performance across global teams, her leadership enables companies to move faster, smarter, and more profitably.`,
@@ -69,7 +69,7 @@ A strategist and operator in equal measure, she's known for driving measurable i
     {
       name: 'Mark Nodson',
       title: 'Director of Technology',
-      linkedIn: 'https://www.linkedin.com/in/mark-nodson',
+      linkedIn: 'https://www.linkedin.com/in/mark-nodson-5546a662/',
       bio: 'Bio content coming soon.',
       expertise: []
     }
