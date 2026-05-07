@@ -35,7 +35,7 @@
   padding: 0.25rem;
 
   img {
-    width: 15rem;
+    width: 8rem;
     height: auto;
     transition: opacity 0.3s ease;
   }
@@ -184,22 +184,22 @@
   pointer-events: none;
 }
 
-// Hide on tablet and mobile
-@media (max-width: 1024px) {
+// Hide on viewports too narrow for the nav to fit beside content
+@media (max-width: 1499px) {
   .scroll-nav {
     display: none;
   }
 }
 
-// Extra small screens
-@media (min-width: 1025px) and (max-width: 1280px) {
+// Mid-large screens - tighter to the edge
+@media (min-width: 1500px) and (max-width: 1799px) {
   .scroll-nav {
     left: 1rem;
   }
 }
 
-// Large screens - move it further left
-@media (min-width: 1600px) {
+// Extra large screens - move it further left
+@media (min-width: 1800px) {
   .scroll-nav {
     left: 3rem;
   }
