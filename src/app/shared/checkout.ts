@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { getFirebaseApp } from './firebase';
+import { noticeContentType, noticeFileProblem } from './notice-file';
 import type { PlanId } from './plans';
 
 /** Mirrors `functions/src/signup.ts` — keep both in step. */
@@ -31,8 +32,15 @@ export interface CheckoutSession {
   signupId: string;
 }
 
-/** Thrown with a message safe to show the visitor. */
-export class CheckoutError extends Error {}
+/** Thrown with a message safe to show the visitor; `field` names the input at fault. */
+export class CheckoutError extends Error {
+  constructor(
+    message: string,
+    readonly field?: 'notice'
+  ) {
+    super(message);
+  }
+}
 
 /**
  * Talks to the Cloud Functions backend for the compliance signup. Card details
@@ -51,6 +59,11 @@ export class CheckoutService {
       'firebase/storage'
     );
 
+    const problem = noticeFileProblem(file);
+    if (problem) {
+      throw new CheckoutError(problem, 'notice');
+    }
+
     const storage = getStorage(await getFirebaseApp());
     if (useEmulators()) {
       connectStorageEmulator(storage, 'localhost', 9199);
@@ -60,10 +73,11 @@ export class CheckoutService {
     const path = `notice-uploads/${crypto.randomUUID()}/${safeName}`;
 
     try {
-      await uploadBytes(ref(storage, path), file, { contentType: file.type });
+      await uploadBytes(ref(storage, path), file, { contentType: noticeContentType(file) ?? file.type });
     } catch {
       throw new CheckoutError(
-        'We could not upload your notice. You can remove it and continue, or try again.'
+        'We could not upload your notice. You can remove it and continue, or try again.',
+        'notice'
       );
     }
 
@@ -79,7 +93,7 @@ export class CheckoutService {
       const result = await createCheckoutSession(request);
       return result.data;
     } catch (error) {
-      throw new CheckoutError(messageFor(error));
+      throw new CheckoutError(messageFor(error), fieldFor(error));
     }
   }
 
@@ -130,11 +144,21 @@ function useEmulators(): boolean {
   return USE_EMULATORS;
 }
 
+function fieldFor(error: unknown): 'notice' | undefined {
+  const details = (error as { details?: { field?: string } }).details;
+  return details?.field === 'notice' ? 'notice' : undefined;
+}
+
 function messageFor(error: unknown): string {
   const code = (error as { code?: string }).code;
 
   if (code === 'functions/not-found') {
     return 'That promotion code is not valid for this order. Remove it from the link or contact admin@blackwoodops.com.';
+  }
+
+  // The server inspected the uploaded notice and says why it was refused.
+  if (fieldFor(error) === 'notice') {
+    return (error as Error).message;
   }
 
   if (code === 'functions/invalid-argument') {

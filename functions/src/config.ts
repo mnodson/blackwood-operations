@@ -9,8 +9,36 @@ export const stripeWebhookSecret = defineSecret('STRIPE_WEBHOOK_SECRET');
 
 /** Plain params live in functions/.env — see functions/.env.example. */
 export const appOrigin = defineString('APP_ORIGIN', {
-  default: 'https://blackwood-operations.web.app'
+  default: 'https://blackwoodops.com'
 });
+
+/**
+ * Stripe customer portal login link, included in monitoring customers'
+ * confirmation email so they can update their card or cancel. Mirrors
+ * `src/app/shared/billing.ts`. Left empty, the email omits it.
+ */
+export const billingPortalUrl = defineString('BILLING_PORTAL_URL', { default: '' });
+
+/**
+ * Sites allowed to call the callable functions from a browser: the live
+ * domains, Firebase preview channels, and `ng serve`.
+ */
+export const allowedOrigins: (string | RegExp)[] = [
+  'https://blackwoodops.com',
+  'https://www.blackwoodops.com',
+  'https://blackwood-operations.web.app',
+  'https://blackwood-operations.firebaseapp.com',
+  /^https:\/\/blackwood-operations--[a-z0-9-]+\.web\.app$/,
+  /^http:\/\/localhost:\d+$/
+];
+
+/**
+ * Rejects callable requests without a valid App Check token. Turn on only
+ * after the site sends tokens (APP_CHECK_SITE_KEY in src/app/shared/firebase.ts)
+ * and the App Check console shows nearly all requests as verified — otherwise
+ * every real visitor is refused.
+ */
+export const enforceAppCheck = false;
 
 /** Resend API key (re_…). Set with `firebase functions:secrets:set RESEND_API_KEY`. */
 export const resendApiKey = defineSecret('RESEND_API_KEY');
@@ -61,7 +89,7 @@ export function monitoringPriceIdFor(plan: PlanId): string {
 /**
  * True once a real API key and every plan price are configured. Accepts a
  * standard secret key (sk_) or a restricted key (rk_) with Checkout Sessions
- * write access, which is all these functions call.
+ * write and Promotion codes and Coupons read access.
  */
 export function isStripeConfigured(): boolean {
   return (

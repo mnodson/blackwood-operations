@@ -1,11 +1,14 @@
 import { initializeApp } from 'firebase-admin/app';
-import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore, Timestamp, type DocumentSnapshot } from 'firebase-admin/firestore';
 import { getDownloadURL, getStorage } from 'firebase-admin/storage';
 import { HttpsError, onCall, onRequest } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 import type Stripe from 'stripe';
 import {
+  allowedOrigins,
   appOrigin,
+  billingPortalUrl,
+  enforceAppCheck,
   isStripeConfigured,
   monitoringPriceIdFor,
   orderFromEmail,
@@ -20,11 +23,14 @@ import {
 } from './config.js';
 import {
   customerConfirmationEmail,
+  teamMonitoringEmail,
   teamOrderEmail,
+  type MonitoringAlert,
   type OrderDetails,
   type OrderEmail,
   type OrderOutcome
 } from './notify.js';
+import { checkNoticeUpload, NoticeRejectedError } from './notice.js';
 import { isValidationError, parseSignupRequest, type SignupRequest } from './signup.js';
 
 initializeApp();
@@ -60,7 +66,7 @@ type MonitoringStatus = 'none' | 'pending' | 'active' | 'past_due' | 'canceled';
  * No card details pass through here — Stripe collects them on its own page.
  */
 export const createCheckoutSession = onCall(
-  { secrets: [stripeSecretKey], cors: true, enforceAppCheck: false },
+  { secrets: [stripeSecretKey], cors: allowedOrigins, enforceAppCheck },
   async request => {
     if (!isStripeConfigured()) {
       logger.warn('createCheckoutSession called before Stripe was configured');
@@ -75,6 +81,18 @@ export const createCheckoutSession = onCall(
         throw new HttpsError('invalid-argument', error.message);
       }
       throw error;
+    }
+
+    if (signup.noticeUploadPath) {
+      try {
+        await checkNoticeUpload(signup.noticeUploadPath);
+      } catch (error) {
+        if (error instanceof NoticeRejectedError) {
+          logger.warn('Notice upload rejected', { path: signup.noticeUploadPath, reason: error.message });
+          throw new HttpsError('invalid-argument', error.message, { field: 'notice' });
+        }
+        throw error;
+      }
     }
 
     const promotionCodeId = signup.promoCode
@@ -163,10 +181,9 @@ function checkoutParams(
     customer_email: signup.contact.email,
     client_reference_id: signupId,
     metadata,
-    // Stripe accepts one or the other: a code already applied, or the field.
-    ...(promotionCodeId
-      ? { discounts: [{ promotion_code: promotionCodeId }] }
-      : { allow_promotion_codes: true }),
+    // Codes are only taken from ?promo= links. Checkout's own promo field is
+    // left off: its bot check can fail with a 403 and no visible challenge.
+    ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
     billing_address_collection: 'required',
     success_url: `${origin}/compliance/signup/success?session_id={CHECKOUT_SESSION_ID}${monitoringQuery}`,
     cancel_url: `${origin}/compliance/signup?plan=${signup.plan}${monitoringQuery}${promoQuery}&canceled=1`
@@ -201,7 +218,7 @@ function checkoutParams(
  * sessions created by `createCheckoutSession` (carrying a signupId) answer.
  */
 export const getCheckoutSummary = onCall(
-  { secrets: [stripeSecretKey], cors: true, enforceAppCheck: false },
+  { secrets: [stripeSecretKey], cors: allowedOrigins, enforceAppCheck },
   async request => {
     const sessionId = (request.data as { sessionId?: unknown } | null)?.sessionId;
     if (typeof sessionId !== 'string' || !/^cs_(test|live)_[A-Za-z0-9]{10,200}$/.test(sessionId)) {
@@ -270,22 +287,37 @@ export const stripeWebhook = onRequest(
     }
 
     // Stripe retries on any non-2xx and may deliver an event more than once.
+    // The receipt is a claim, not a record of success: if this run dies
+    // mid-way (timeout, crash), the claim lapses and Stripe's retry runs again.
     const receipt = db.collection('stripeEvents').doc(event.id);
-    const alreadyHandled = await db.runTransaction(async tx => {
-      if ((await tx.get(receipt)).exists) {
-        return true;
+    const claim = await db.runTransaction(async tx => {
+      const existing = await tx.get(receipt);
+      // Receipts from before claims existed have no state and were handled.
+      const state = existing.get('state') as 'processing' | 'done' | undefined;
+      if (existing.exists && state !== 'processing') {
+        return 'done';
       }
-      tx.set(receipt, { type: event.type, receivedAt: FieldValue.serverTimestamp() });
-      return false;
+      const startedAt = existing.get('startedAt') as Timestamp | undefined;
+      if (startedAt && Date.now() - startedAt.toMillis() < WEBHOOK_CLAIM_MS) {
+        return 'in_progress';
+      }
+      tx.set(receipt, { type: event.type, state: 'processing', startedAt: Timestamp.now() });
+      return 'claimed';
     });
 
-    if (alreadyHandled) {
+    if (claim === 'done') {
       res.status(200).send('Already processed');
+      return;
+    }
+    if (claim === 'in_progress') {
+      // Another delivery is handling it; ask Stripe to check back later.
+      res.status(409).send('In progress');
       return;
     }
 
     try {
       await handleEvent(event);
+      await receipt.update({ state: 'done', doneAt: FieldValue.serverTimestamp() });
       res.status(200).send('OK');
     } catch (error) {
       logger.error('Webhook handler failed', { eventId: event.id, type: event.type, error });
@@ -295,6 +327,9 @@ export const stripeWebhook = onRequest(
     }
   }
 );
+
+/** Longer than the webhook's 60s timeout, so a live run is never claimed twice. */
+const WEBHOOK_CLAIM_MS = 5 * 60 * 1000;
 
 async function handleEvent(event: Stripe.Event): Promise<void> {
   switch (event.type) {
@@ -317,18 +352,39 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
       await markPaymentFailed(event.data.object);
       return;
 
-    case 'customer.subscription.updated':
+    case 'customer.subscription.updated': {
+      const subscription = event.data.object;
+      await setMonitoringStatus(subscription.id, monitoringStatusFrom(subscription), signupIdOfSubscription(subscription));
+      return;
+    }
+
     case 'customer.subscription.deleted': {
       const subscription = event.data.object;
-      await setMonitoringStatus(subscription, monitoringStatusFrom(subscription));
+      const signup = await setMonitoringStatus(subscription.id, 'canceled', signupIdOfSubscription(subscription));
+      if (signup) {
+        await sendMonitoringAlert(event, 'canceled', signup, {
+          subscriptionId: subscription.id,
+          livemode: subscription.livemode
+        });
+      }
       return;
     }
 
     case 'invoice.payment_failed': {
       const invoice = event.data.object;
       const subscriptionId = id(invoice.parent?.subscription_details?.subscription);
-      if (subscriptionId) {
-        await setMonitoringStatusForSubscriptionId(subscriptionId, 'past_due');
+      if (!subscriptionId) {
+        return;
+      }
+      const signup = await setMonitoringStatus(subscriptionId, 'past_due');
+      if (signup) {
+        await sendMonitoringAlert(event, 'payment_failed', signup, {
+          subscriptionId,
+          livemode: invoice.livemode,
+          amountDue: invoice.amount_due,
+          currency: invoice.currency,
+          hostedInvoiceUrl: invoice.hosted_invoice_url
+        });
       }
       return;
     }
@@ -434,7 +490,10 @@ async function sendOrderEmails(
     [`team-${outcome}`, teamOrderEmail(outcome, orderNotifyEmail.value(), order)]
   ];
   if (outcome === 'paid') {
-    emails.push(['customer-paid', customerConfirmationEmail(orderReplyToEmail.value(), order)]);
+    emails.push([
+      'customer-paid',
+      customerConfirmationEmail(orderReplyToEmail.value(), billingPortalUrl.value(), order)
+    ]);
   }
 
   const alreadySent = (snapshot.get('emailsSent') ?? {}) as Record<string, unknown>;
@@ -512,30 +571,55 @@ function monitoringStatusFrom(subscription: Stripe.Subscription): MonitoringStat
   }
 }
 
-async function setMonitoringStatus(
-  subscription: Stripe.Subscription,
-  monitoringStatus: MonitoringStatus
-): Promise<void> {
-  const signupId = subscription.metadata?.['signupId'];
-  if (signupId) {
-    await signups
-      .doc(signupId)
-      .update({ monitoringStatus, updatedAt: FieldValue.serverTimestamp() });
-    return;
-  }
-  await setMonitoringStatusForSubscriptionId(subscription.id, monitoringStatus);
+function signupIdOfSubscription(subscription: Stripe.Subscription): string | undefined {
+  return subscription.metadata?.['signupId'];
 }
 
-async function setMonitoringStatusForSubscriptionId(
+/**
+ * Records a monitoring status change on the signup that bought the
+ * subscription, and returns that signup (null if none matches). The signupId
+ * from subscription metadata is used when known, since a subscription event
+ * can arrive before checkout.session.completed stores the subscription id.
+ */
+async function setMonitoringStatus(
   subscriptionId: string,
-  monitoringStatus: MonitoringStatus
-): Promise<void> {
+  monitoringStatus: MonitoringStatus,
+  signupId?: string
+): Promise<DocumentSnapshot | null> {
+  if (signupId) {
+    const ref = signups.doc(signupId);
+    await ref.update({ monitoringStatus, updatedAt: FieldValue.serverTimestamp() });
+    return ref.get();
+  }
+
   const match = await signups.where('stripe.subscriptionId', '==', subscriptionId).limit(1).get();
   if (match.empty) {
     logger.warn('No signup for subscription', { subscriptionId });
-    return;
+    return null;
   }
-  await match.docs[0].ref.update({ monitoringStatus, updatedAt: FieldValue.serverTimestamp() });
+  const signup = match.docs[0];
+  await signup.ref.update({ monitoringStatus, updatedAt: FieldValue.serverTimestamp() });
+  return signup;
+}
+
+/**
+ * Tells the team a monitoring payment failed or a subscription ended. The
+ * customer hears from Stripe directly (Settings → Billing → Subscriptions and
+ * emails). Keyed on the event id, so Stripe's retries never send it twice.
+ */
+async function sendMonitoringAlert(
+  event: Stripe.Event,
+  alert: MonitoringAlert,
+  signup: DocumentSnapshot,
+  details: { subscriptionId: string; livemode: boolean; amountDue?: number | null; currency?: string | null; hostedInvoiceUrl?: string | null }
+): Promise<void> {
+  const email = teamMonitoringEmail(alert, orderNotifyEmail.value(), {
+    signupId: signup.id,
+    signup: signup.data() as SignupRequest,
+    ...details
+  });
+  const resendId = await sendEmail(email, `monitoring-${event.id}`);
+  logger.info('Monitoring alert sent', { signupId: signup.id, alert, resendId });
 }
 
 /** Stripe fields arrive either as an id string or an expanded object. */

@@ -220,13 +220,16 @@
                 <input
                   id="notice-upload"
                   type="file"
-                  accept=".pdf,.doc,.docx,.txt"
+                  [accept]="noticeAccept"
                   (change)="onFileSelected($event)">
-                @if (uploadedFileName(); as fileName) {
+                @if (fileError(); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                } @else if (uploadedFileName(); as fileName) {
                   <span class="signup-hint">Selected: {{ fileName }}</span>
                 } @else {
                   <span class="signup-hint">
-                    Helps us start from where you are. Please do not upload patient records.
+                    PDF, Word or text, up to 10 MB. Helps us start from where you are.
+                    Please do not upload patient records.
                   </span>
                 }
               </div>

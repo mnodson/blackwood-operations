@@ -134,7 +134,7 @@ export class ComplianceSignupSuccessPage {
     const minimumWait = this.prefersReducedMotion() ? Promise.resolve() : delay(MIN_LOADING_MS);
 
     try {
-      const summary = await this.checkout.getCheckoutSummary(sessionId);
+      const summary = await withRetries(() => this.checkout.getCheckoutSummary(sessionId));
       await minimumWait;
       this.summary.set(summary);
       this.state.set(STATE_FOR_OUTCOME[summary.outcome]);
@@ -157,6 +157,23 @@ const STATE_FOR_OUTCOME: Record<CheckoutSummary['outcome'], VerifyState> = {
   processing: 'processing',
   failed: 'declined'
 };
+
+/**
+ * Waits before each retry of the payment lookup. A cold start or network blip
+ * should not tell a customer who has paid that we could not confirm it.
+ */
+const RETRY_DELAYS_MS = [1000, 3000];
+
+async function withRetries<T>(attempt: () => Promise<T>): Promise<T> {
+  for (const wait of RETRY_DELAYS_MS) {
+    try {
+      return await attempt();
+    } catch {
+      await delay(wait);
+    }
+  }
+  return attempt();
+}
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));

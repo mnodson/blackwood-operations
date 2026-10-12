@@ -141,6 +141,7 @@ export function teamOrderEmail(
 /** The confirmation sent to the customer once their order is paid. */
 export function customerConfirmationEmail(
   replyTo: string,
+  billingPortalUrl: string,
   { signupId, signup, session }: OrderDetails
 ): OrderEmail {
   const plan = PLAN_NAMES[signup.plan];
@@ -183,6 +184,11 @@ export function customerConfirmationEmail(
     ? `We received your current notice (${noticeFileName}) and will work from it.`
     : null;
   const questions = `Questions? Just reply to this email or write to ${replyTo}.`;
+  // Monitoring customers manage their card and cancel through Stripe's portal.
+  const portal =
+    signup.monitoring && billingPortalUrl
+      ? `To update your card or cancel monitoring, sign in to your billing portal with ${signup.contact.email}:`
+      : null;
 
   const subject = `Your order is confirmed — ${plan} notice update`;
 
@@ -198,6 +204,7 @@ export function customerConfirmationEmail(
     'WHAT HAPPENS NEXT',
     ...steps.map(([title, body], i) => `${i + 1}. ${title} — ${body}`),
     '',
+    ...(portal ? [portal, billingPortalUrl, ''] : []),
     questions,
     '',
     '— The Blackwood Operations team'
@@ -214,6 +221,8 @@ export function customerConfirmationEmail(
       detailsTable(rows),
       subheading('What happens next'),
       stepsList(steps),
+      portal ? paragraph(portal) : '',
+      portal ? button(billingPortalUrl, 'Manage billing') : '',
       paragraph(
         `Questions? Just reply to this email or write to ` +
           `<a href="mailto:${escape(replyTo)}" style="color:${BRAND.accent}">${escape(replyTo)}</a>.`,
@@ -224,6 +233,88 @@ export function customerConfirmationEmail(
   });
 
   return { to: signup.contact.email, replyTo, subject, text, html };
+}
+
+export type MonitoringAlert = 'payment_failed' | 'canceled';
+
+export interface MonitoringAlertDetails {
+  signupId: string;
+  signup: SignupRequest;
+  subscriptionId: string;
+  livemode: boolean;
+  /** Amount of the failed invoice, in cents. */
+  amountDue?: number | null;
+  currency?: string | null;
+  /** Stripe-hosted page where the customer can pay the failed invoice. */
+  hostedInvoiceUrl?: string | null;
+}
+
+const ALERT_INTRO: Record<MonitoringAlert, string> = {
+  payment_failed:
+    "A monthly monitoring payment failed. Stripe will retry the card and emails the customer a " +
+    'link to update it. Reach out if it is not resolved in a few days.',
+  canceled:
+    'A monitoring subscription has ended — the customer cancelled, or Stripe stopped retrying ' +
+    'a failed payment. Their notice is no longer being kept current.'
+};
+
+/** The internal email sent to the team when monitoring billing needs attention. */
+export function teamMonitoringEmail(
+  alert: MonitoringAlert,
+  to: string,
+  details: MonitoringAlertDetails
+): OrderEmail {
+  const { signupId, signup, subscriptionId } = details;
+  const plan = PLAN_NAMES[signup.plan];
+  const stripeBase = `https://dashboard.stripe.com${details.livemode ? '' : '/test'}`;
+
+  const rows: [string, string][] = [
+    ['Order reference', signupId],
+    ['Plan', `${plan} + monitoring`],
+    ...(alert === 'payment_failed'
+      ? [['Amount due', formatAmount(details.amountDue ?? null, details.currency ?? null)] as [string, string]]
+      : []),
+    ['Practice', signup.practice.name],
+    ['Contact', signup.contact.name],
+    ['Email', signup.contact.email],
+    ['Phone', signup.contact.phone]
+  ];
+
+  const links: [string, string | null][] = [
+    ['Subscription in Stripe', `${stripeBase}/subscriptions/${subscriptionId}`],
+    ['Customer payment page', details.hostedInvoiceUrl ?? null]
+  ];
+
+  const order = `${signup.practice.name} — ${plan}`;
+  const subject =
+    alert === 'payment_failed' ? `Monitoring payment failed: ${order}` : `Monitoring ended: ${order}`;
+  const heading = alert === 'payment_failed' ? 'Monitoring payment failed' : 'Monitoring ended';
+
+  const text = [
+    ALERT_INTRO[alert],
+    '',
+    ...rows.map(([label, value]) => `${label}: ${value}`),
+    '',
+    ...links.filter(hasUrl).map(([label, url]) => `${label}: ${url}`)
+  ].join('\n');
+
+  const html = layout({
+    preheader: ALERT_INTRO[alert],
+    heading,
+    body: [
+      paragraph(ALERT_INTRO[alert]),
+      detailsTable(rows),
+      paragraph(
+        links
+          .filter(hasUrl)
+          .map(([label, url]) => `<a href="${escape(url)}" style="color:${BRAND.accent}">${escape(label)}</a>`)
+          .join(' &middot; '),
+        { raw: true }
+      )
+    ].join('\n')
+  });
+
+  return { to, replyTo: signup.contact.email, subject, text, html };
 }
 
 /** Table-based wrapper with inline styles, which is what email clients render reliably. */

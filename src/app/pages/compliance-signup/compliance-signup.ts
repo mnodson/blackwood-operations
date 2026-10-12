@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DOCUMENT } from '@angular/common';
 import { CheckoutError, CheckoutService, SignupRequest } from '../../shared/checkout';
+import { NOTICE_ACCEPT, noticeFileProblem } from '../../shared/notice-file';
 import { getControlError } from '../../shared/form-errors';
 import { PLANS, Plan, PlanId, findPlan } from '../../shared/plans';
 import { StateSelect } from '../../shared/state-select/state-select';
@@ -53,6 +54,9 @@ export class ComplianceSignupPage {
   protected readonly submitError = signal<string | null>(null);
   protected readonly uploadedFile = signal<File | null>(null);
   protected readonly uploadedFileName = computed(() => this.uploadedFile()?.name ?? null);
+  /** Why the chosen notice cannot be uploaded, shown under the field. */
+  protected readonly fileError = signal<string | null>(null);
+  protected readonly noticeAccept = NOTICE_ACCEPT;
 
   /** Stripe sends the visitor back here with ?canceled=1 if they leave checkout. */
   protected readonly returnedFromCheckout = signal(false);
@@ -206,7 +210,15 @@ export class ComplianceSignupPage {
 
   protected onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.uploadedFile.set(input.files?.[0] ?? null);
+    const file = input.files?.[0] ?? null;
+    const problem = file ? noticeFileProblem(file) : null;
+
+    // A file that cannot be uploaded is cleared now, so it never blocks checkout.
+    if (problem) {
+      input.value = '';
+    }
+    this.fileError.set(problem);
+    this.uploadedFile.set(problem ? null : file);
   }
 
   /**
@@ -249,6 +261,11 @@ export class ComplianceSignupPage {
       // Full navigation: Stripe Checkout lives on stripe.com, not in the router.
       this.document.location.assign(session.url);
     } catch (error) {
+      // A refused notice is cleared so the visitor can pick another or go without.
+      if (error instanceof CheckoutError && error.field === 'notice') {
+        this.clearNotice(error.message);
+      }
+
       const message =
         error instanceof CheckoutError
           ? error.message
@@ -257,6 +274,15 @@ export class ComplianceSignupPage {
       this.submitError.set(message);
       this.submitState.set('error');
     }
+  }
+
+  private clearNotice(reason: string): void {
+    const input = this.document.getElementById('notice-upload') as HTMLInputElement | null;
+    if (input) {
+      input.value = '';
+    }
+    this.uploadedFile.set(null);
+    this.fileError.set(reason);
   }
 
   private buildRequest(noticeUploadPath?: string): SignupRequest {
