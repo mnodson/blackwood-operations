@@ -28,7 +28,8 @@ import {
   type MonitoringAlert,
   type OrderDetails,
   type OrderEmail,
-  type OrderOutcome
+  type OrderOutcome,
+  type UploadedNotice
 } from './notify.js';
 import { checkNoticeUpload, NoticeRejectedError } from './notice.js';
 import { isValidationError, parseSignupRequest, type SignupRequest } from './signup.js';
@@ -83,16 +84,18 @@ export const createCheckoutSession = onCall(
       throw error;
     }
 
-    if (signup.noticeUploadPath) {
-      try {
-        await checkNoticeUpload(signup.noticeUploadPath);
-      } catch (error) {
-        if (error instanceof NoticeRejectedError) {
-          logger.warn('Notice upload rejected', { path: signup.noticeUploadPath, reason: error.message });
-          throw new HttpsError('invalid-argument', error.message, { field: 'notice' });
-        }
-        throw error;
+    // Every upload is checked; the first refused one is reported, naming its path
+    // so the form can remove just that file.
+    const paths = signup.noticeUploadPaths ?? [];
+    const checks = await Promise.allSettled(paths.map(path => checkNoticeUpload(path)));
+    const refused = checks.findIndex(check => check.status === 'rejected');
+    if (refused > -1) {
+      const error = (checks[refused] as PromiseRejectedResult).reason;
+      if (error instanceof NoticeRejectedError) {
+        logger.warn('Notice upload rejected', { path: paths[refused], reason: error.message });
+        throw new HttpsError('invalid-argument', error.message, { field: 'notice', path: paths[refused] });
       }
+      throw error;
     }
 
     const promotionCodeId = signup.promoCode
@@ -483,7 +486,7 @@ async function sendOrderEmails(
     signupId,
     signup,
     session,
-    noticeDownloadUrl: await noticeDownloadUrl(signup)
+    notices: await uploadedNotices(signup)
   };
 
   const emails: [string, OrderEmail][] = [
@@ -536,25 +539,29 @@ async function sendEmail(email: OrderEmail, idempotencyKey: string): Promise<str
 }
 
 /**
- * A direct download link for the uploaded notice, so the email works for
- * anyone it reaches without a Firebase login. Uses a Firebase Storage
- * download token: the link does not expire, and can be revoked in the
- * console (Storage → file → revoke access token). Returns null rather than
- * failing the webhook if the file is missing.
+ * The uploaded notices with a direct download link each, so the email works
+ * for anyone it reaches without a Firebase login. Uses Firebase Storage
+ * download tokens: the links do not expire, and can be revoked in the
+ * console (Storage → file → revoke access token). A missing file gets a null
+ * link rather than failing the webhook.
  */
-async function noticeDownloadUrl(signup: SignupRequest): Promise<string | null> {
-  if (!signup.noticeUploadPath) {
-    return null;
-  }
-  try {
-    return await getDownloadURL(getStorage().bucket().file(signup.noticeUploadPath));
-  } catch (error) {
-    logger.warn('Could not create notice download link', {
-      path: signup.noticeUploadPath,
-      error
-    });
-    return null;
-  }
+async function uploadedNotices(
+  signup: SignupRequest & { noticeUploadPath?: string }
+): Promise<UploadedNotice[]> {
+  // Signups saved before multiple uploads stored a single path.
+  const paths = signup.noticeUploadPaths ?? (signup.noticeUploadPath ? [signup.noticeUploadPath] : []);
+
+  return Promise.all(
+    paths.map(async path => {
+      let downloadUrl: string | null = null;
+      try {
+        downloadUrl = await getDownloadURL(getStorage().bucket().file(path));
+      } catch (error) {
+        logger.warn('Could not create notice download link', { path, error });
+      }
+      return { path, fileName: path.split('/').pop() ?? path, downloadUrl };
+    })
+  );
 }
 
 function monitoringStatusFrom(subscription: Stripe.Subscription): MonitoringStatus {

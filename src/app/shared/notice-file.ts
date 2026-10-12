@@ -6,6 +6,9 @@
 
 export const MAX_NOTICE_BYTES = 10 * 1024 * 1024;
 
+/** Documents a visitor can attach; more than this and they tick "we will be in touch". Mirrors functions/src/signup.ts. */
+export const MAX_NOTICE_FILES = 5;
+
 /** Accepted extensions and the content type each is uploaded with. */
 const NOTICE_TYPES: Record<string, string> = {
   pdf: 'application/pdf',

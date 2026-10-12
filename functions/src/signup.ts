@@ -26,13 +26,17 @@ export interface SignupRequest {
     email: string;
     phone: string;
   };
-  /** Storage object path of the optional notice upload, e.g. notice-uploads/<id>/notice.pdf */
-  noticeUploadPath?: string;
+  /** Storage object paths of the optional notice uploads, e.g. notice-uploads/<id>/notice.pdf */
+  noticeUploadPaths?: string[];
+  /** The customer has more than `MAX_NOTICE_FILES` documents and wants us to collect the rest. */
+  moreDocuments: boolean;
   /** Customer-facing promotion code from a ?promo= link, applied before Checkout opens. */
   promoCode?: string;
 }
 
 const HAS_NOTICE = ['Yes', 'No', 'Not sure'] as const;
+/** Mirrors `MAX_NOTICE_FILES` in src/app/shared/notice-file.ts. */
+export const MAX_NOTICE_FILES = 5;
 const UPLOAD_PATH = /^notice-uploads\/[A-Za-z0-9-]{8,64}\/[^/]{1,200}$/;
 const PROMO_CODE = /^[A-Za-z0-9_-]{1,50}$/;
 
@@ -112,19 +116,17 @@ export function parseSignupRequest(data: unknown): SignupRequest {
       name: str(contact['name'], 'contact.name', 200, 2),
       email,
       phone: str(contact['phone'], 'contact.phone', 50)
-    }
+    },
+    moreDocuments: body['moreDocuments'] === true
   };
 
   if (typeof practice['typeOther'] === 'string' && practice['typeOther'].trim()) {
     parsed.practice.typeOther = str(practice['typeOther'], 'practice.typeOther', 200);
   }
 
-  if (body['noticeUploadPath'] !== undefined && body['noticeUploadPath'] !== null) {
-    const path = str(body['noticeUploadPath'], 'noticeUploadPath', 300);
-    if (!UPLOAD_PATH.test(path)) {
-      throw new ValidationError('noticeUploadPath is not a valid upload location');
-    }
-    parsed.noticeUploadPath = path;
+  const paths = uploadPaths(body);
+  if (paths.length) {
+    parsed.noticeUploadPaths = paths;
   }
 
   if (typeof body['promoCode'] === 'string' && body['promoCode'].trim()) {
@@ -136,6 +138,22 @@ export function parseSignupRequest(data: unknown): SignupRequest {
   }
 
   return parsed;
+}
+
+/** The notice uploads, also accepting the single `noticeUploadPath` older pages send. */
+function uploadPaths(body: Record<string, unknown>): string[] {
+  const raw = body['noticeUploadPaths'] ?? (body['noticeUploadPath'] == null ? [] : [body['noticeUploadPath']]);
+  if (!Array.isArray(raw)) {
+    throw new ValidationError('noticeUploadPaths must be a list');
+  }
+  if (raw.length > MAX_NOTICE_FILES) {
+    throw new ValidationError(`noticeUploadPaths can list at most ${MAX_NOTICE_FILES} files`);
+  }
+  const paths = raw.map(value => str(value, 'noticeUploadPaths', 300));
+  if (paths.some(path => !UPLOAD_PATH.test(path))) {
+    throw new ValidationError('noticeUploadPaths contains an invalid upload location');
+  }
+  return [...new Set(paths)];
 }
 
 export function isValidationError(error: unknown): error is ValidationError {

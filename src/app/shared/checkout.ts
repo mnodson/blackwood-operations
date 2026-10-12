@@ -22,7 +22,10 @@ export interface SignupRequest {
     email: string;
     phone: string;
   };
-  noticeUploadPath?: string;
+  /** Storage paths of the optional notice uploads, at most `MAX_NOTICE_FILES`. */
+  noticeUploadPaths?: string[];
+  /** The visitor has more documents than they could attach and wants us to collect them. */
+  moreDocuments: boolean;
   /** Customer-facing promotion code from a ?promo= link. */
   promoCode?: string;
 }
@@ -32,11 +35,15 @@ export interface CheckoutSession {
   signupId: string;
 }
 
-/** Thrown with a message safe to show the visitor; `field` names the input at fault. */
+/**
+ * Thrown with a message safe to show the visitor. `field` names the input at
+ * fault and, for a refused notice, `noticeIndex` says which of the uploads.
+ */
 export class CheckoutError extends Error {
   constructor(
     message: string,
-    readonly field?: 'notice'
+    readonly field?: 'notice',
+    readonly noticeIndex?: number
   ) {
     super(message);
   }
@@ -93,7 +100,9 @@ export class CheckoutService {
       const result = await createCheckoutSession(request);
       return result.data;
     } catch (error) {
-      throw new CheckoutError(messageFor(error), fieldFor(error));
+      const field = fieldFor(error);
+      const noticeIndex = field === 'notice' ? request.noticeUploadPaths?.indexOf(noticePathFor(error)) : undefined;
+      throw new CheckoutError(messageFor(error), field, noticeIndex === -1 ? undefined : noticeIndex);
     }
   }
 
@@ -147,6 +156,11 @@ function useEmulators(): boolean {
 function fieldFor(error: unknown): 'notice' | undefined {
   const details = (error as { details?: { field?: string } }).details;
   return details?.field === 'notice' ? 'notice' : undefined;
+}
+
+/** The Storage path of the notice the server refused. */
+function noticePathFor(error: unknown): string {
+  return (error as { details?: { path?: string } }).details?.path ?? '';
 }
 
 function messageFor(error: unknown): string {

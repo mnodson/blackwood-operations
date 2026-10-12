@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DOCUMENT } from '@angular/common';
 import { CheckoutError, CheckoutService, SignupRequest } from '../../shared/checkout';
-import { NOTICE_ACCEPT, noticeFileProblem } from '../../shared/notice-file';
+import { MAX_NOTICE_FILES, NOTICE_ACCEPT, noticeFileProblem } from '../../shared/notice-file';
 import { getControlError } from '../../shared/form-errors';
 import { PLANS, Plan, PlanId, findPlan } from '../../shared/plans';
 import { StateSelect } from '../../shared/state-select/state-select';
@@ -52,11 +52,12 @@ export class ComplianceSignupPage {
   protected readonly stepIndex = signal(0);
   protected readonly submitState = signal<SubmitState>('idle');
   protected readonly submitError = signal<string | null>(null);
-  protected readonly uploadedFile = signal<File | null>(null);
-  protected readonly uploadedFileName = computed(() => this.uploadedFile()?.name ?? null);
-  /** Why the chosen notice cannot be uploaded, shown under the field. */
+  protected readonly uploadedFiles = signal<readonly File[]>([]);
+  protected readonly canAddFiles = computed(() => this.uploadedFiles().length < MAX_NOTICE_FILES);
+  /** Why a chosen notice cannot be uploaded, shown under the field. */
   protected readonly fileError = signal<string | null>(null);
   protected readonly noticeAccept = NOTICE_ACCEPT;
+  protected readonly maxNoticeFiles = MAX_NOTICE_FILES;
 
   /** Stripe sends the visitor back here with ?canceled=1 if they leave checkout. */
   protected readonly returnedFromCheckout = signal(false);
@@ -127,7 +128,8 @@ export class ComplianceSignupPage {
   protected readonly contactGroup: FormGroup = this.fb.group({
     contactName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required]]
+    phone: ['', [Validators.required]],
+    moreDocuments: [false]
   });
 
   constructor() {
@@ -208,17 +210,41 @@ export class ComplianceSignupPage {
     this.scrollToFormTop();
   }
 
-  protected onFileSelected(event: Event): void {
+  /**
+   * Adds the chosen files to the list, so a visitor can pick from several
+   * folders. Files that cannot be uploaded, and any beyond the limit, are left
+   * out now so they never block checkout.
+   */
+  protected onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    const problem = file ? noticeFileProblem(file) : null;
+    const chosen = Array.from(input.files ?? []);
+    // Cleared so the same file can be chosen again after being removed.
+    input.value = '';
 
-    // A file that cannot be uploaded is cleared now, so it never blocks checkout.
-    if (problem) {
-      input.value = '';
+    const problems: string[] = [];
+    const accepted = chosen.filter(file => {
+      const problem = noticeFileProblem(file);
+      if (problem) {
+        problems.push(`${file.name}: ${problem}`);
+      }
+      return !problem;
+    });
+
+    const room = MAX_NOTICE_FILES - this.uploadedFiles().length;
+    if (accepted.length > room) {
+      problems.push(
+        `You can upload up to ${MAX_NOTICE_FILES} documents. ` +
+          'If you have more, tick the box below and we will be in touch to receive them.'
+      );
     }
-    this.fileError.set(problem);
-    this.uploadedFile.set(problem ? null : file);
+
+    this.uploadedFiles.update(files => [...files, ...accepted.slice(0, room)]);
+    this.fileError.set(problems.length ? problems.join(' ') : null);
+  }
+
+  protected removeFile(index: number): void {
+    this.uploadedFiles.update(files => files.filter((_, i) => i !== index));
+    this.fileError.set(null);
   }
 
   /**
@@ -254,16 +280,15 @@ export class ComplianceSignupPage {
     this.submitError.set(null);
 
     try {
-      const file = this.uploadedFile();
-      const noticeUploadPath = file ? await this.checkout.uploadNotice(file) : undefined;
-      const session = await this.checkout.startCheckout(this.buildRequest(noticeUploadPath));
+      const noticeUploadPaths = await this.uploadNotices();
+      const session = await this.checkout.startCheckout(this.buildRequest(noticeUploadPaths));
 
       // Full navigation: Stripe Checkout lives on stripe.com, not in the router.
       this.document.location.assign(session.url);
     } catch (error) {
-      // A refused notice is cleared so the visitor can pick another or go without.
+      // A refused notice is removed so the visitor can pick another or go without.
       if (error instanceof CheckoutError && error.field === 'notice') {
-        this.clearNotice(error.message);
+        this.rejectNotice(error);
       }
 
       const message =
@@ -276,16 +301,31 @@ export class ComplianceSignupPage {
     }
   }
 
-  private clearNotice(reason: string): void {
-    const input = this.document.getElementById('notice-upload') as HTMLInputElement | null;
-    if (input) {
-      input.value = '';
-    }
-    this.uploadedFile.set(null);
-    this.fileError.set(reason);
+  /** Uploads the attached notices, reporting which one failed. */
+  private async uploadNotices(): Promise<string[]> {
+    return Promise.all(
+      this.uploadedFiles().map(async (file, index) => {
+        try {
+          return await this.checkout.uploadNotice(file);
+        } catch (error) {
+          throw error instanceof CheckoutError
+            ? new CheckoutError(error.message, 'notice', index)
+            : error;
+        }
+      })
+    );
   }
 
-  private buildRequest(noticeUploadPath?: string): SignupRequest {
+  /** Removes the refused notice, or all of them when the server did not say which. */
+  private rejectNotice(error: CheckoutError): void {
+    const files = this.uploadedFiles();
+    const file = error.noticeIndex === undefined ? undefined : files[error.noticeIndex];
+
+    this.uploadedFiles.set(file ? files.filter(other => other !== file) : []);
+    this.fileError.set(file ? `${file.name}: ${error.message}` : error.message);
+  }
+
+  private buildRequest(noticeUploadPaths: string[]): SignupRequest {
     const practice = this.practiceGroup.getRawValue();
     const contact = this.contactGroup.getRawValue();
 
@@ -305,7 +345,8 @@ export class ComplianceSignupPage {
         email: contact.email,
         phone: contact.phone
       },
-      noticeUploadPath,
+      noticeUploadPaths: noticeUploadPaths.length ? noticeUploadPaths : undefined,
+      moreDocuments: contact.moreDocuments === true,
       promoCode: this.promoCode
     };
   }

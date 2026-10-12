@@ -215,24 +215,49 @@
 
               <div class="signup-field signup-field-wide">
                 <label for="notice-upload">
-                  Upload your current notice <span class="signup-optional">(optional)</span>
+                  Upload your current documents <span class="signup-optional">(optional, up to {{ maxNoticeFiles }})</span>
                 </label>
-                <input
-                  id="notice-upload"
-                  type="file"
-                  [accept]="noticeAccept"
-                  (change)="onFileSelected($event)">
+                @if (canAddFiles()) {
+                  <input
+                    id="notice-upload"
+                    type="file"
+                    multiple
+                    [accept]="noticeAccept"
+                    (change)="onFilesSelected($event)">
+                }
+                @if (uploadedFiles().length) {
+                  <ul class="signup-files" aria-label="Selected documents">
+                    @for (file of uploadedFiles(); track file; let i = $index) {
+                      <li class="signup-file">
+                        <span class="signup-file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="signup-link"
+                          [attr.aria-label]="'Remove ' + file.name"
+                          (click)="removeFile(i)">
+                          Remove
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
                 @if (fileError(); as message) {
-                  <span class="signup-error">{{ message }}</span>
-                } @else if (uploadedFileName(); as fileName) {
-                  <span class="signup-hint">Selected: {{ fileName }}</span>
+                  <span class="signup-error" role="alert">{{ message }}</span>
                 } @else {
                   <span class="signup-hint">
-                    PDF, Word or text, up to 10 MB. Helps us start from where you are.
+                    PDF, Word or text, up to 10 MB each. Helps us start from where you are.
                     Please do not upload patient records.
                   </span>
                 }
               </div>
+
+              <label class="signup-field-wide signup-check">
+                <input type="checkbox" formControlName="moreDocuments">
+                <span>
+                  If you have more than {{ maxNoticeFiles }} documents, please check here and we
+                  will be in touch to receive them.
+                </span>
+              </label>
             </div>
 
             <p class="signup-note">

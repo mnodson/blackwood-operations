@@ -1,5 +1,5 @@
 import type Stripe from 'stripe';
-import type { PlanId, SignupRequest } from './signup.js';
+import { MAX_NOTICE_FILES, type PlanId, type SignupRequest } from './signup.js';
 import { US_STATES } from './states.js';
 
 const PROJECT_ID = 'blackwood-operations';
@@ -40,8 +40,15 @@ export interface OrderDetails {
   signupId: string;
   signup: SignupRequest;
   session: Stripe.Checkout.Session;
-  /** Direct download link for the uploaded notice, when there is one. */
-  noticeDownloadUrl: string | null;
+  /** The customer's uploaded notices, in the order they attached them. */
+  notices: UploadedNotice[];
+}
+
+export interface UploadedNotice {
+  path: string;
+  fileName: string;
+  /** Direct download link, or null if one could not be made. */
+  downloadUrl: string | null;
 }
 
 const INTRO: Record<OrderOutcome, string> = {
@@ -55,7 +62,7 @@ const INTRO: Record<OrderOutcome, string> = {
 export function teamOrderEmail(
   outcome: OrderOutcome,
   to: string,
-  { signupId, signup, session, noticeDownloadUrl }: OrderDetails
+  { signupId, signup, session, notices }: OrderDetails
 ): OrderEmail {
   const plan = PLAN_NAMES[signup.plan];
   const stripeBase = `https://dashboard.stripe.com${session.livemode ? '' : '/test'}`;
@@ -68,12 +75,15 @@ export function teamOrderEmail(
   const signupLink =
     `https://console.firebase.google.com/project/${PROJECT_ID}` +
     `/firestore/databases/-default-/data/~2Fsignups~2F${signupId}`;
-  const noticeFileName = fileNameOf(signup);
-  // Console folder link only as a fallback if a download link could not be made.
-  const noticeConsoleLink = signup.noticeUploadPath && !noticeDownloadUrl
-    ? `https://console.firebase.google.com/project/${PROJECT_ID}/storage/${STORAGE_BUCKET}` +
-      `/files/~2F${signup.noticeUploadPath.split('/').slice(0, -1).map(encodeURIComponent).join('~2F')}`
-    : null;
+  const downloads = notices.filter(hasDownload);
+  // Console folder links only as a fallback where a download link could not be made.
+  const consoleLinks: [string, string][] = notices
+    .filter(notice => !notice.downloadUrl)
+    .map(notice => [
+      `${notice.fileName} (Firebase console)`,
+      `https://console.firebase.google.com/project/${PROJECT_ID}/storage/${STORAGE_BUCKET}` +
+        `/files/~2F${notice.path.split('/').slice(0, -1).map(encodeURIComponent).join('~2F')}`
+    ]);
 
   const practiceType = signup.practice.typeOther
     ? `${signup.practice.type} (${signup.practice.typeOther})`
@@ -95,13 +105,17 @@ export function teamOrderEmail(
     ['Phone', signup.contact.phone],
     ['Billing name', billing?.name ?? 'Not provided'],
     ['Billing address', formatAddress(billing?.address) ?? 'Not provided'],
-    ['Uploaded notice', noticeFileName ?? 'None']
+    ['Uploaded documents', notices.length ? notices.map(notice => notice.fileName).join(', ') : 'None'],
+    [
+      `More than ${MAX_NOTICE_FILES} documents`,
+      signup.moreDocuments ? 'Yes — contact the customer to collect the rest' : 'No'
+    ]
   ];
 
   const links: [string, string | null][] = [
     ['Payment in Stripe', paymentLink],
     ['Signup record', signupLink],
-    ['Uploaded notice (Firebase console)', noticeConsoleLink]
+    ...consoleLinks
   ];
 
   const order = `${signup.practice.name} — ${plan}` + (signup.monitoring ? ' + monitoring' : '');
@@ -112,7 +126,8 @@ export function teamOrderEmail(
     '',
     ...rows.map(([label, value]) => `${label}: ${value}`),
     '',
-    ...(noticeDownloadUrl ? [`Download uploaded notice: ${noticeDownloadUrl}`, ''] : []),
+    ...downloads.map(notice => `Download ${notice.fileName}: ${notice.downloadUrl}`),
+    ...(downloads.length ? [''] : []),
     ...links.filter(hasUrl).map(([label, url]) => `${label}: ${url}`)
   ].join('\n');
 
@@ -122,9 +137,7 @@ export function teamOrderEmail(
     body: [
       paragraph(INTRO[outcome]),
       detailsTable(rows),
-      noticeDownloadUrl
-        ? button(noticeDownloadUrl, `Download uploaded notice (${noticeFileName ?? 'file'})`)
-        : '',
+      ...downloads.map(notice => button(notice.downloadUrl, `Download ${notice.fileName}`)),
       paragraph(
         links
           .filter(hasUrl)
@@ -142,11 +155,10 @@ export function teamOrderEmail(
 export function customerConfirmationEmail(
   replyTo: string,
   billingPortalUrl: string,
-  { signupId, signup, session }: OrderDetails
+  { signupId, signup, session, notices }: OrderDetails
 ): OrderEmail {
   const plan = PLAN_NAMES[signup.plan];
   const firstName = signup.contact.name.split(/\s+/)[0];
-  const noticeFileName = fileNameOf(signup);
   const paid = formatAmount(session.amount_total, session.currency);
 
   const rows: [string, string][] = [
@@ -180,8 +192,12 @@ export function customerConfirmationEmail(
   const intro =
     `Thank you for your order. Your payment went through, and we have started on the ` +
     `Notice of Privacy Practices for ${signup.practice.name}.`;
-  const received = noticeFileName
-    ? `We received your current notice (${noticeFileName}) and will work from it.`
+  const received = notices.length
+    ? `We received your current ${notices.length === 1 ? 'document' : 'documents'} ` +
+      `(${notices.map(notice => notice.fileName).join(', ')}) and will work from ${notices.length === 1 ? 'it' : 'them'}.`
+    : null;
+  const moreDocuments = signup.moreDocuments
+    ? `You told us you have more than ${MAX_NOTICE_FILES} documents. We will be in touch shortly to receive the rest.`
     : null;
   const questions = `Questions? Just reply to this email or write to ${replyTo}.`;
   // Monitoring customers manage their card and cancel through Stripe's portal.
@@ -197,6 +213,7 @@ export function customerConfirmationEmail(
     '',
     intro,
     ...(received ? ['', received] : []),
+    ...(moreDocuments ? ['', moreDocuments] : []),
     '',
     'YOUR ORDER',
     ...rows.map(([label, value]) => `${label}: ${value}`),
@@ -217,6 +234,7 @@ export function customerConfirmationEmail(
       paragraph(`Hi ${firstName},`),
       paragraph(intro),
       received ? paragraph(received) : '',
+      moreDocuments ? paragraph(moreDocuments) : '',
       subheading('Your order'),
       detailsTable(rows),
       subheading('What happens next'),
@@ -391,8 +409,8 @@ function button(href: string, label: string): string {
   );
 }
 
-function fileNameOf(signup: SignupRequest): string | null {
-  return signup.noticeUploadPath?.split('/').pop() ?? null;
+function hasDownload(notice: UploadedNotice): notice is UploadedNotice & { downloadUrl: string } {
+  return notice.downloadUrl !== null;
 }
 
 function hasUrl(link: [string, string | null]): link is [string, string] {
