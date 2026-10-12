@@ -1,0 +1,71 @@
+.pc-header {
+  background: var(--primary-color);
+  color: var(--text-light);
+  padding: clamp(5rem, 10vw, 7.5rem) 0 clamp(3.5rem, 7vw, 5rem);
+}
+
+.pc-header-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6cb8c7;
+  margin-bottom: 2rem;
+
+  &::before {
+    background: #6cb8c7;
+    box-shadow: 0 0 0 4px rgba(108, 184, 199, 0.2);
+  }
+}
+
+.page-title {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  max-width: 22ch;
+  line-height: 2;
+}
+
+.pc-header-lede {
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 68ch;
+}
+
+.pc-header-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+/* The global .btn-secondary is tuned for light backgrounds. */
+.btn-pc-secondary {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+
+  &:hover {
+    color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #6cb8c7;
+  }
+}
+
+.pc-close {
+  background: #ffffff;
+  padding: clamp(4rem, 9vw, 7rem) 0;
+  text-align: center;
+
+  p {
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .pc-header-cta .btn {
+    width: 100%;
+  }
+}

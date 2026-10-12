@@ -1,0 +1,192 @@
+<div class="success-page">
+  <header class="success-header">
+    <div class="container">
+      @switch (state()) {
+        @case ('loading') {
+          <span class="success-badge">
+            <span class="material-symbols-outlined" aria-hidden="true">hourglass_top</span>
+            Confirming your order…
+          </span>
+          <h1 class="page-title">Thank you. Just checking with Stripe.</h1>
+        }
+        @case ('processing') {
+          <span class="success-badge">
+            <span class="material-symbols-outlined" aria-hidden="true">pending</span>
+            Payment processing
+          </span>
+          <h1 class="page-title">Your order is in. Payment is still settling.</h1>
+          <p class="success-lede">
+            Stripe will email you as soon as it clears, and we start on your notice then.
+          </p>
+        }
+        @case ('declined') {
+          <span class="success-badge success-badge-warning">
+            <span class="material-symbols-outlined" aria-hidden="true">credit_card_off</span>
+            Payment declined
+          </span>
+          <h1 class="page-title">Your payment didn't go through.</h1>
+          <p class="success-lede">
+            Your bank declined the payment, so you have not been charged. We'll reach out to help,
+            or you can try again now.
+          </p>
+        }
+        @case ('unverified') {
+          <span class="success-badge success-badge-warning">
+            <span class="material-symbols-outlined" aria-hidden="true">error</span>
+            Payment not confirmed
+          </span>
+          <h1 class="page-title">We couldn't confirm your payment.</h1>
+          <p class="success-lede">
+            Don't worry — we'll reach out to you shortly to sort it out.
+          </p>
+        }
+        @default {
+          <span class="success-badge">
+            <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+            Order confirmed
+          </span>
+          <h1 class="page-title">You're set. We'll take it from here.</h1>
+          <p class="success-lede">
+            Thank you for trusting us with your notice. Here is what happens next.
+          </p>
+        }
+      }
+    </div>
+  </header>
+
+  <div class="container success-body" aria-live="polite">
+    @switch (state()) {
+      @case ('loading') {
+        <app-payment-progress
+          label="Confirming your payment with Stripe"
+          [steps]="['Confirming your payment', 'Verifying securely with Stripe', 'Preparing your order summary']" />
+      }
+      @case ('processing') {
+        <app-payment-progress
+          label="Your payment is still processing"
+          [steps]="['Payment processing', 'Waiting for your bank to confirm', 'We will email you when it clears']" />
+      }
+    }
+
+    @if (state() === 'confirmed' && summary(); as order) {
+      <section class="success-order" aria-label="Your order">
+        <h2 class="success-order-title">Your order</h2>
+        <dl class="success-order-lines">
+          @if (order.practiceName) {
+            <div><dt>Practice</dt><dd>{{ order.practiceName }}</dd></div>
+          }
+          @if (plan(); as plan) {
+            <div><dt>Plan</dt><dd>{{ plan.name }} — one-time update</dd></div>
+            @if (order.monitoring) {
+              <div>
+                <dt>Monitoring</dt>
+                <dd>{{ plan.monitoringPrice | currency: 'USD' : 'symbol' : '1.0-0' }} a month</dd>
+              </div>
+            }
+          }
+          @if (order.amountTotal !== null) {
+            <div class="success-order-total">
+              <dt>Paid today</dt>
+              <dd>{{ order.amountTotal / 100 | currency: (order.currency ?? 'usd').toUpperCase() }}</dd>
+            </div>
+          }
+        </dl>
+        @if (order.email) {
+          <p class="success-order-note">Your receipt is going to {{ order.email }}.</p>
+        }
+      </section>
+    }
+
+    @if (state() === 'declined') {
+      <ol class="success-steps">
+        <li class="success-step">
+          <span class="material-symbols-outlined success-step-icon" aria-hidden="true">replay</span>
+          <div>
+            <h2 class="success-step-title">Try a different payment method</h2>
+            <p class="success-step-body">
+              Your plan choice is kept when you go back. Checking out again with another card or
+              account is safe — nothing was charged the first time.
+            </p>
+          </div>
+        </li>
+        <li class="success-step">
+          <span class="material-symbols-outlined success-step-icon" aria-hidden="true">support_agent</span>
+          <div>
+            <h2 class="success-step-title">Or let us help</h2>
+            <p class="success-step-body">
+              We'll be in touch within one business day to help you complete your order.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <p class="success-help">
+        Questions? Email <a href="mailto:admin@blackwoodops.com">admin&#64;blackwoodops.com</a>.
+      </p>
+
+      <a class="btn btn-primary" routerLink="/compliance/signup" [queryParams]="retryParams()">
+        Try again
+      </a>
+    } @else if (state() === 'unverified') {
+      <ol class="success-steps">
+        <li class="success-step">
+          <span class="material-symbols-outlined success-step-icon" aria-hidden="true">mark_email_unread</span>
+          <div>
+            <h2 class="success-step-title">Check your inbox</h2>
+            <p class="success-step-body">
+              If your payment went through, Stripe will email your receipt within a few minutes and
+              your order is safely in.
+            </p>
+          </div>
+        </li>
+        <li class="success-step">
+          <span class="material-symbols-outlined success-step-icon" aria-hidden="true">support_agent</span>
+          <div>
+            <h2 class="success-step-title">We'll reach out</h2>
+            <p class="success-step-body">
+              Either way, we'll be in touch within one business day to confirm your order or help
+              you complete it. Please don't check out again in the meantime, so you aren't charged
+              twice.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <p class="success-help">
+        Want to reach us first? Email
+        <a href="mailto:admin@blackwoodops.com">admin&#64;blackwoodops.com</a>.
+      </p>
+
+      <a class="btn btn-primary" routerLink="/">Back to home</a>
+    } @else if (state() !== 'loading') {
+      <ol class="success-steps">
+        @for (step of nextSteps(); track step.title) {
+          <li class="success-step">
+            <span class="material-symbols-outlined success-step-icon" aria-hidden="true">
+              {{ step.icon }}
+            </span>
+            <div>
+              <h2 class="success-step-title">{{ step.title }}</h2>
+              <p class="success-step-body">{{ step.body }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+
+      @if (monitoring() && billingPortalUrl) {
+        <p class="success-help">
+          Need to update your card or cancel monitoring later?
+          <a [href]="billingPortalUrl" target="_blank" rel="noopener">Manage your billing</a>.
+        </p>
+      }
+
+      <p class="success-help">
+        Questions in the meantime? Email
+        <a href="mailto:admin@blackwoodops.com">admin&#64;blackwoodops.com</a> and we will get back
+        to you the same business day.
+      </p>
+
+      <a class="btn btn-primary" routerLink="/">Back to home</a>
+    }
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="pay-progress" role="status">
+  <span class="pay-progress-label">{{ label() }}</span>
+
+  <div class="pay-visual" aria-hidden="true">
+    <div class="pay-card">
+      <span class="pay-card-chip"></span>
+      <span class="pay-card-number">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      <span class="pay-card-meta"></span>
+      <span class="pay-card-shine"></span>
+    </div>
+
+    <div class="pay-badge">
+      <svg class="pay-badge-ring" viewBox="0 0 48 48">
+        <circle class="pay-badge-track" cx="24" cy="24" r="21" />
+        <circle class="pay-badge-arc" cx="24" cy="24" r="21" />
+      </svg>
+      <span class="material-symbols-outlined">lock</span>
+    </div>
+  </div>
+
+  <div class="pay-copy" aria-hidden="true">
+    <p class="pay-steps">
+      @for (step of steps(); track $index) {
+        <span class="pay-step" [style.--step]="$index">{{ step }}</span>
+      }
+    </p>
+
+    <div class="pay-skeleton">
+      @for (width of [42, 58, 34]; track $index) {
+        <div class="pay-skeleton-row">
+          <span class="pay-bar" [style.width.%]="width"></span>
+          <span class="pay-bar pay-bar-value"></span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

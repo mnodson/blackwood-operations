@@ -4,6 +4,7 @@ import { AboutComponent } from '../../components/about/about';
 import { StatsComponent } from '../../components/stats/stats';
 import { ServicesComponent } from '../../components/services/services';
 import { CaseStudiesComponent } from '../../components/case-studies/case-studies';
+import { ComplianceTeaserComponent } from '../../components/compliance-teaser/compliance-teaser';
 import { AssessmentComponent } from '../../components/assessment/assessment';
 import { TestimonialsComponent } from '../../components/testimonials/testimonials';
 import { CtaComponent } from '../../components/cta/cta';
@@ -20,6 +21,7 @@ import { ScrollNavComponent } from '../../components/scroll-nav/scroll-nav';
     StatsComponent,
     ServicesComponent,
     CaseStudiesComponent,
+    ComplianceTeaserComponent,
     AssessmentComponent,
     TestimonialsComponent,
     CtaComponent,

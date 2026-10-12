@@ -1,0 +1,85 @@
+.nc-audience {
+  background: #ffffff;
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: 2.5rem;
+}
+
+.nc-audience-lede {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+}
+
+/* Six tiles in a 3x2 grid, with the seventh stretched across the bottom. */
+.nc-practice-types {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto 2.5rem;
+
+  li:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.nc-practice-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.25rem 1.375rem;
+  background: var(--background-cream);
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  font-weight: 600;
+  color: var(--primary-color);
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: var(--accent-color);
+    background: #ffffff;
+  }
+
+  .material-symbols-outlined {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+}
+
+.nc-audience-qualifier {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+@media (max-width: 900px) {
+  .nc-practice-types {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .nc-audience {
+    text-align: left;
+  }
+
+  .nc-practice-types {
+    grid-template-columns: 1fr;
+  }
+
+  .nc-practice-type {
+    justify-content: flex-start;
+  }
+}

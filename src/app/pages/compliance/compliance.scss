@@ -1,0 +1,26 @@
+.compliance-page {
+  overflow-x: hidden;
+}
+
+/* Hand-off to the signup page. The id is kept so the scroll rail and the
+   sticky bar still have a section to track. */
+.compliance-cta {
+  background: #ffffff;
+  padding: clamp(2.75rem, 5vw, 4.5rem) 0;
+  text-align: center;
+  scroll-margin-top: 5rem;
+
+  p {
+    max-width: 52ch;
+    margin: 0 auto 2rem;
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+}
+
+.compliance-cta-nudge {
+  margin: 1.25rem auto 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}

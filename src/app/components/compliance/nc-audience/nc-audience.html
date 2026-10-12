@@ -1,0 +1,24 @@
+<section id="who-this-is-for" class="nc-audience">
+  <div class="container">
+    <h2 class="section-title section-title-centered">Who this is for</h2>
+
+    <p class="nc-audience-lede">
+      Independent and small group practices that are too small for in-house compliance staff and
+      too busy to track regulatory change.
+    </p>
+
+    <ul class="nc-practice-types">
+      @for (type of practiceTypes(); track type.label) {
+        <li class="nc-practice-type">
+          <span class="material-symbols-outlined" aria-hidden="true">{{ type.icon }}</span>
+          <span>{{ type.label }}</span>
+        </li>
+      }
+    </ul>
+
+    <p class="nc-audience-qualifier">
+      If you have between one and twenty providers and no compliance department, this was built
+      for you.
+    </p>
+  </div>
+</section>

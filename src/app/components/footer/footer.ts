@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface SocialLink {
   name: string;
@@ -10,7 +11,8 @@ interface SocialLink {
   selector: 'app-footer',
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink]
 })
 export class FooterComponent {
   protected readonly currentYear = signal(new Date().getFullYear());

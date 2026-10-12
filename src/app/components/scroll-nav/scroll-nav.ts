@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, signal, effect, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, signal, input, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-interface NavSection {
+export interface NavSection {
   id: string;
   label: string;
   icon?: string;
@@ -19,10 +19,11 @@ export class ScrollNavComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly isVisible = signal(false);
   protected readonly activeSection = signal<string>('');
 
-  protected readonly sections = signal<NavSection[]>([
+  readonly sections = input<NavSection[]>([
     { id: 'about', label: 'About' },
     { id: 'services', label: 'Services' },
     { id: 'case-studies', label: 'Case Studies' },
+    { id: 'compliance', label: 'Compliance' },
     { id: 'assessment', label: 'Free Assessment' },
     { id: 'testimonials', label: 'Testimonials' }
   ]);

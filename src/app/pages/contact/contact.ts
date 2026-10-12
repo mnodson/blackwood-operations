@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/c
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CalendlyWidgetComponent } from '../../components/calendly-widget/calendly-widget';
 import { AssessmentResultState } from '../../models/assessment-result-state.interface';
+import { getFieldError } from '../../shared/form-errors';
 
 @Component({
   selector: 'app-contact',
@@ -19,7 +20,7 @@ export class ContactPage {
 
   protected readonly mailtoHref = computed(() => {
     const result = this.assessmentResult();
-    if (!result) return 'mailto:donna@blackwoodops.com';
+    if (!result) return 'mailto:admin@blackwoodops.com';
 
     const subject = encodeURIComponent(`Operational Assessment Results - ${result.title}`);
 
@@ -55,7 +56,7 @@ ${index + 1}. ${rec}`;
 
 Looking forward to discussing how Blackwood Operations can help.`;
 
-    return `mailto:donna@blackwoodops.com?subject=${subject}&body=${encodeURIComponent(body)}`;
+    return `mailto:admin@blackwoodops.com?subject=${subject}&body=${encodeURIComponent(body)}`;
   });
 
   protected readonly calendlyPrefill = computed(() => {
@@ -111,22 +112,7 @@ Looking forward to discussing how Blackwood Operations can help.`;
   }
 
   protected getFieldError(fieldName: string): string | null {
-    const field = this.contactForm.get(fieldName);
-    if (!field || !field.touched || !field.errors) {
-      return null;
-    }
-
-    if (field.errors['required']) {
-      return 'This field is required';
-    }
-    if (field.errors['email']) {
-      return 'Please enter a valid email address';
-    }
-    if (field.errors['minlength']) {
-      const minLength = field.errors['minlength'].requiredLength;
-      return `Must be at least ${minLength} characters`;
-    }
-    return null;
+    return getFieldError(this.contactForm, fieldName);
   }
 
   protected openCalendly(): void {

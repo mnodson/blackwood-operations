@@ -1,0 +1,36 @@
+<section id="questions" class="nc-faq">
+  <div class="container">
+    <h2 class="section-title section-title-centered">Questions</h2>
+
+    <div class="nc-faq-list">
+      @for (entry of entries(); track entry.question; let i = $index) {
+        <div class="nc-faq-item" [class.open]="isOpen(i)">
+          <h3 class="nc-faq-heading">
+            <button
+              type="button"
+              class="nc-faq-trigger"
+              [attr.aria-expanded]="isOpen(i)"
+              [attr.aria-controls]="'nc-faq-panel-' + i"
+              [id]="'nc-faq-trigger-' + i"
+              (click)="toggle(i)">
+              <span class="nc-faq-question">{{ entry.question }}</span>
+              <span class="nc-faq-chevron material-symbols-outlined" aria-hidden="true">
+                expand_more
+              </span>
+            </button>
+          </h3>
+
+          @if (isOpen(i)) {
+            <div
+              class="nc-faq-panel"
+              [id]="'nc-faq-panel-' + i"
+              role="region"
+              [attr.aria-labelledby]="'nc-faq-trigger-' + i">
+              <p>{{ entry.answer }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>

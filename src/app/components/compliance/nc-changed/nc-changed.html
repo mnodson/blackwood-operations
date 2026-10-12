@@ -1,0 +1,87 @@
+<section id="what-changed" class="nc-changed">
+  <div class="container">
+    <h2 class="section-title section-title-centered nc-changed-title">
+      What actually changed, and why it caught people out
+    </h2>
+    <p class="nc-changed-lede">
+      The last two years are a useful illustration of why an annual set-and-forget approach fails.
+    </p>
+
+    <!-- Two federal changes pulling in opposite directions. The amber flow is language
+         practices added and then had to strip back out; the teal flow is language they
+         had to add and keep. -->
+    <svg class="nc-opposing" viewBox="0 0 900 290" preserveAspectRatio="xMidYMid meet" role="img"
+      aria-label="Reproductive health language was added to notices in 2024 and then vacated in June 2025, so it had to come back out. Separately, 42 CFR Part 2 disclosures had to be added by February 16, 2026 and remain required.">
+
+      <!-- Flow one: in, then back out -->
+      <g class="nc-flow nc-flow-out">
+        <path class="nc-flow-line"
+          d="M96 168 C 150 168, 152 92, 214 92 L 318 92 C 382 92, 372 222, 428 222"/>
+        <circle class="nc-flow-origin" cx="96" cy="168" r="5"/>
+        <g class="nc-flow-terminal" transform="translate(452 222)">
+          <circle r="17"/>
+          <path class="nc-flow-glyph" d="M-7 0 H7"/>
+        </g>
+        <text class="nc-flow-label" x="266" y="70" text-anchor="middle">
+          Reproductive health language added
+        </text>
+        <text class="nc-flow-date" x="96" y="196" text-anchor="middle">April 2024</text>
+        <text class="nc-flow-outcome" x="452" y="264" text-anchor="middle">
+          Vacated — has to come back out
+        </text>
+        <text class="nc-flow-date" x="452" y="284" text-anchor="middle">June 2025</text>
+      </g>
+
+      <!-- Flow two: in, and it stays -->
+      <g class="nc-flow nc-flow-in">
+        <path class="nc-flow-line"
+          d="M566 168 C 626 168, 630 104, 700 104 L 762 104"/>
+        <circle class="nc-flow-origin" cx="566" cy="168" r="5"/>
+        <g class="nc-flow-terminal" transform="translate(786 104)">
+          <circle r="17"/>
+          <path class="nc-flow-glyph" d="M-7 0 H7 M0 -7 V7"/>
+        </g>
+        <text class="nc-flow-label" x="676" y="82" text-anchor="middle">
+          Part 2 disclosures required
+        </text>
+        <text class="nc-flow-outcome" x="786" y="146" text-anchor="middle">Still in force</text>
+        <text class="nc-flow-date" x="786" y="166" text-anchor="middle">February 16, 2026</text>
+      </g>
+    </svg>
+
+    <ol class="nc-timeline">
+      @for (entry of timeline(); track entry.date; let i = $index) {
+        <li
+          class="nc-timeline-entry"
+          [class.visible]="isVisible(i)"
+          [class.is-add]="entry.direction === 'add'"
+          [class.is-remove]="entry.direction === 'remove'"
+          [attr.data-index]="i">
+          <div class="nc-timeline-marker" aria-hidden="true">
+            <span class="material-symbols-outlined">
+              {{ entry.direction === 'add' ? 'add' : 'remove' }}
+            </span>
+          </div>
+          <div class="nc-timeline-body">
+            <h3 class="nc-timeline-date">{{ entry.date }}</h3>
+            <p>{{ entry.body }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+
+    <p class="nc-changed-pivot">
+      Two federal changes. Eighteen months apart. Pulling in opposite directions. Then add your
+      state.
+    </p>
+
+    <p class="nc-changed-states">
+      Washington's My Health My Data Act. Nevada SB 370, effective January 2026. Minnesota's
+      consumer health data provisions. California AB 45, restricting geofencing around health
+      facilities. New York's proposed health information privacy act. None of these are HIPAA,
+      and all of them can reach a practice that treats HIPAA as the finish line.
+    </p>
+
+    <p class="nc-changed-kicker">This is not a document that holds still.</p>
+  </div>
+</section>

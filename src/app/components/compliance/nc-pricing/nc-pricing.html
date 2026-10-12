@@ -1,0 +1,83 @@
+<section id="pricing" class="nc-pricing">
+  <div class="container">
+    <h2 class="section-title section-title-centered section-title-on-dark">Pricing</h2>
+
+    <p class="nc-pricing-lede">
+      One payment gets your documents updated. Add monitoring if you want us to keep them current
+      from there.
+    </p>
+
+    <div class="nc-plans">
+      @for (plan of plans; track plan.id) {
+        <article class="nc-plan" [class.featured]="plan.featured">
+          @if (plan.featured) {
+            <div class="nc-plan-flag">Most practices</div>
+          }
+
+          <h3 class="nc-plan-name">{{ plan.name }}</h3>
+
+          <div class="nc-plan-price">
+            <span class="nc-plan-amount">{{ plan.price | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+            <span class="nc-plan-cadence">one-time</span>
+          </div>
+
+          <p class="nc-plan-scope">{{ plan.scope }}</p>
+
+          <ul class="nc-plan-features">
+            @for (feature of plan.features; track feature) {
+              <li>
+                <span class="material-symbols-outlined" aria-hidden="true">check</span>
+                <span>{{ feature }}</span>
+              </li>
+            }
+          </ul>
+
+          <p class="nc-plan-monitoring">
+            <span class="material-symbols-outlined" aria-hidden="true">radar</span>
+            <span>
+              Add monitoring for
+              <strong>{{ plan.monitoringPrice | currency: 'USD' : 'symbol' : '1.0-0' }} a month</strong>
+            </span>
+          </p>
+
+          <a
+            routerLink="/compliance/signup"
+            [queryParams]="{ plan: plan.id }"
+            class="btn nc-plan-cta"
+            [class.btn-primary]="plan.featured">
+            Choose {{ plan.name }}
+          </a>
+        </article>
+      }
+    </div>
+
+    <div class="nc-monitoring">
+      <h3 class="nc-monitoring-title">Ongoing monitoring, as an add-on</h3>
+      <p>
+        Add it when you buy your update. We watch federal and state rules for the states you
+        practice in, and when a change affects your documents we send updated versions as
+        required. Month to month, cancel anytime.
+      </p>
+      @if (billingPortalUrl) {
+        <p class="nc-monitoring-manage">
+          Already monitoring?
+          <a [href]="billingPortalUrl" target="_blank" rel="noopener">Manage your billing</a>
+        </p>
+      }
+    </div>
+
+    <p class="nc-plan-terms">
+      No setup fee. The documents we deliver are yours to keep, with or without monitoring.
+    </p>
+
+    <div class="nc-pricing-cta">
+      <a routerLink="/compliance/signup" class="btn btn-primary btn-large">
+        Fix my notice now
+      </a>
+
+      <p class="nc-pricing-nudge">
+        One payment from $395. Monitoring from $39 a month.
+      </p>
+    </div>
+  </div>
+</section>

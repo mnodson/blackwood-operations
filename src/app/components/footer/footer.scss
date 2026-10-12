@@ -5,7 +5,7 @@
 
   .footer-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 3rem;
     margin-bottom: 2rem;
   }
@@ -74,6 +74,26 @@
       color: rgba(255, 255, 255, 0.6);
       font-size: 0.9rem;
       margin: 0;
+    }
+
+    .footer-legal {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+
+      a {
+        /* Padded to a comfortable thumb target rather than the 20px the text alone gives. */
+        padding: 0.625rem 0.25rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--text-light);
+        }
+      }
     }
   }
 }

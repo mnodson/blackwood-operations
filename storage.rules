@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// The signup form lets a visitor attach their current Notice of Privacy
+// Practices before checkout. Uploads land in a per-upload folder the client
+// names with a random id, are capped in size and type, and are never readable
+// from the browser — staff retrieve them through the console, or through the
+// download-token link the order email carries (tokens bypass these rules).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /notice-uploads/{uploadId}/{fileName} {
+      allow create: if uploadId.matches('[A-Za-z0-9-]{8,64}')
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches(
+          'application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|text/plain'
+        );
+      allow read, update, delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

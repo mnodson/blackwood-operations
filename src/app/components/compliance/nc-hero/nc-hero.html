@@ -1,0 +1,92 @@
+<section class="nc-hero">
+  <div class="nc-hero-background">
+    <img src="media/compliance/hero-strata.svg" alt="" aria-hidden="true">
+    <div class="nc-hero-overlay"></div>
+  </div>
+
+  <div class="container">
+    <div class="nc-hero-grid">
+      <div class="nc-hero-content">
+        <div class="nc-hero-eyebrow heading-badge">Compliance</div>
+
+        <h1 class="page-title">
+          Your Notice of Privacy Practices is probably wrong in two directions at once.
+        </h1>
+
+        <p class="nc-hero-lede">
+          If you updated it in 2024, it says something a federal court struck down. If you have not
+          touched it since, it is missing what every covered entity had to add by February 2026.
+        </p>
+
+        <p class="nc-hero-lede">
+          Compliance keeps your public-facing HIPAA and privacy notices accurate,
+          practice-specific, and ready for the next change. From $395, with optional monitoring.
+        </p>
+
+        <div class="nc-hero-cta">
+          <a routerLink="/compliance/signup" class="btn btn-primary">Fix my notice now</a>
+        </div>
+
+        <p class="nc-hero-reassure">
+          Two minutes to sign up — or
+          <a routerLink="/privacy-changes">read what changed</a> first.
+        </p>
+      </div>
+
+      <!-- The hook: the two federal changes that pulled notices in opposite directions,
+           stated in the hero rather than six sections down the page. -->
+      <aside class="nc-hero-changed" aria-labelledby="nc-hero-changed-title">
+        <h2 id="nc-hero-changed-title" class="nc-hero-changed-title">What actually changed</h2>
+
+        <ol class="nc-hero-changes">
+          @for (change of changes(); track change.date) {
+            <li
+              class="nc-hero-change"
+              [class.is-add]="change.direction === 'add'"
+              [class.is-remove]="change.direction === 'remove'">
+              <span class="nc-hero-change-mark material-symbols-outlined" aria-hidden="true">
+                {{ change.direction === 'add' ? 'add' : 'remove' }}
+              </span>
+
+              <div class="nc-hero-change-body">
+                <div class="nc-hero-change-head">
+                  <span class="nc-hero-change-date">{{ change.date }}</span>
+                  <span class="nc-hero-change-status">{{ change.status }}</span>
+                </div>
+                <p>{{ change.body }}</p>
+              </div>
+            </li>
+          }
+        </ol>
+
+        <!-- Where today sits against the timeline above, and what that costs. -->
+        <div class="nc-hero-now">
+          <span class="nc-hero-now-tag">
+            <span class="nc-hero-now-dot" aria-hidden="true"></span>
+            You are here · {{ todayLabel() }}
+          </span>
+
+          @if (isPastDeadline()) {
+            <p class="nc-hero-now-body">
+              <strong>{{ elapsedLabel() }} past the Part 2 deadline.</strong> OCR has been taking
+              complaints since the day it passed. A notice updated in 2024 still carries language
+              the courts removed; one that has not been touched is missing February's disclosures.
+              Either way, that is the version your patients are reading today.
+            </p>
+          } @else {
+            <p class="nc-hero-now-body">
+              <strong>{{ elapsedLabel() }} until the Part 2 deadline.</strong> A notice updated in
+              2024 already carries language the courts removed, and the new disclosures still have
+              to go in. Start now and both are handled in one pass.
+            </p>
+          }
+
+        </div>
+
+        <a class="nc-hero-changed-link" routerLink="/privacy-changes">
+          See the full timeline <span aria-hidden="true">→</span>
+        </a>
+      </aside>
+    </div>
+  </div>
+</section>

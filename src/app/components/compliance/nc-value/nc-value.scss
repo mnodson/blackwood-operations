@@ -1,0 +1,174 @@
+.nc-value {
+  background: #ffffff;
+}
+
+.section-title {
+  margin-bottom: 2.5rem;
+}
+
+/* The lead benefit spans the full width; the remaining four sit in a 2x2 grid. */
+.nc-benefits {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.nc-benefit {
+  padding: 2rem;
+  background: var(--background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(10, 46, 56, 0.08);
+  }
+
+  /* The first benefit is the argument the whole product rests on. */
+  &:first-child {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #0a2e38 0%, #134652 100%);
+    border-color: transparent;
+    color: var(--text-light);
+
+    .nc-benefit-icon {
+      color: #6cb8c7;
+    }
+
+    .nc-benefit-heading {
+      color: var(--text-light);
+    }
+
+    .nc-benefit-body {
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 70ch;
+    }
+
+    &:hover {
+      box-shadow: 0 12px 32px rgba(10, 46, 56, 0.25);
+    }
+  }
+}
+
+.nc-benefit-icon {
+  font-size: 2rem;
+  color: var(--accent-color);
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.nc-benefit-heading {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--primary-color);
+  margin-bottom: 0.875rem;
+}
+
+.nc-benefit-body {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+/* --- How it works --- */
+
+.nc-how {
+  position: relative;
+  overflow: hidden;
+  background: var(--background-cream);
+  text-align: center;
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.nc-how-backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70vw, 720px);
+  pointer-events: none;
+  opacity: 0.35;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.nc-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.nc-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nc-step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-color);
+  color: var(--text-light);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  flex-shrink: 0;
+}
+
+.nc-step-heading {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.nc-step-body p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .nc-how-backdrop {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .nc-benefits {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nc-benefit {
+    padding: 1.75rem;
+  }
+
+  .nc-how {
+    text-align: left;
+  }
+
+  .nc-step {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}

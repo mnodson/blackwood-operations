@@ -1,0 +1,144 @@
+<div class="privacy-page">
+  <header class="pp-header">
+    <div class="container">
+      <div class="pp-eyebrow heading-badge">Privacy policy</div>
+      <h1 class="page-title">How Blackwood Operations handles your information.</h1>
+      <p class="pp-updated">Last updated {{ lastUpdated() }}</p>
+    </div>
+  </header>
+
+  <div class="container pp-body">
+    <nav class="pp-toc" aria-label="Sections of this policy">
+      <ol>
+        @for (section of sections(); track section.id) {
+          <li><a [href]="'#' + section.id">{{ section.heading }}</a></li>
+        }
+      </ol>
+    </nav>
+
+    <article class="pp-content">
+      <p class="pp-lede">
+        This policy covers blackwoodops.com and the services we deliver through it. It is written
+        in plain language on purpose — we sell notice clarity, so our own notice should be clear.
+      </p>
+
+      <section id="what-we-collect">
+        <h2>What we collect</h2>
+        <p>We only collect information you hand us, plus the ordinary technical records a website keeps.</p>
+        <ul>
+          <li>
+            <strong>Contact form.</strong> Your name, email address, company, and the message you
+            write. If you arrive from our free assessment, the answers and score you chose to send
+            with it come too.
+          </li>
+          <li>
+            <strong>Compliance signup.</strong> Practice name, contact name, email, phone, practice
+            type, number of providers and locations, the states you practice in, whether you
+            currently have a Notice of Privacy Practices, your plan selection, and any notice
+            document you upload.
+          </li>
+          <li>
+            <strong>Scheduling.</strong> If you book a call through the embedded Calendly widget,
+            Calendly collects your name, email, and the time you choose, under its own policy.
+          </li>
+          <li>
+            <strong>Technical records.</strong> Standard server logs from our host — IP address,
+            browser type, pages requested, and timestamps.
+          </li>
+        </ul>
+        <p>
+          We do not collect card details. Payment is completed on Stripe's hosted checkout and
+          your card number never reaches our systems.
+        </p>
+      </section>
+
+      <section id="how-we-use-it">
+        <h2>How we use it</h2>
+        <p>
+          To answer you, to prepare and maintain the documents you purchase, to bill you, and to
+          tell you when a regulatory change affects your notice. That last one is the product.
+        </p>
+        <p>
+          We do not sell your information, we do not rent it, and we do not use it to build
+          advertising profiles.
+        </p>
+      </section>
+
+      <section id="who-we-share-it-with">
+        <h2>Who we share it with</h2>
+        <p>
+          Only with the service providers that make the business run — our email and hosting
+          providers, Calendly for scheduling, and Stripe for payment — and only with what each one
+          needs. We will also disclose information where the law requires it.
+        </p>
+      </section>
+
+      <section id="uploads">
+        <h2>Documents you upload</h2>
+        <p>
+          A notice you upload during signup is a public-facing document, and we treat it as
+          confidential business material regardless. We use it to understand your current position
+          and to draft your replacement notice. Please do not upload patient records or any
+          protected health information — we do not need it, and our signup form is not the place
+          for it.
+        </p>
+      </section>
+
+      <section id="cookies">
+        <h2>Cookies and third-party embeds</h2>
+        <p>
+          This site does not set advertising or tracking cookies. The Calendly scheduling widget is
+          loaded from Calendly's servers and sets its own cookies when you interact with it; if you
+          would rather avoid that, email us and we will book a time by hand.
+        </p>
+      </section>
+
+      <section id="retention">
+        <h2>How long we keep it</h2>
+        <p>
+          Enquiries are kept while we are in conversation and for a reasonable period afterwards.
+          Customer records and the documents we issue are kept while we are working for you,
+          including for as long as any monitoring continues, and then for as long as we need them to evidence what we delivered and when. Ask us to
+          delete your information and we will, except where we are required to retain it.
+        </p>
+      </section>
+
+      <section id="your-choices">
+        <h2>Your choices</h2>
+        <p>
+          You can ask us what we hold about you, ask for a copy, ask us to correct it, or ask us to
+          delete it. Depending on where you live — California, Washington, Nevada, Colorado and
+          others — you may have specific statutory rights, including rights over consumer health
+          data. We honour these requests from everyone, not only residents of those states. Email
+          us and we will action it.
+        </p>
+      </section>
+
+      <section id="security">
+        <h2>Security</h2>
+        <p>
+          Information is held in access-controlled accounts with reputable providers, and access is
+          limited to the people who need it to do the work. No system is perfect; if a breach ever
+          affects your information we will tell you promptly and tell you what we are doing about
+          it.
+        </p>
+      </section>
+
+      <section id="contact-us">
+        <h2>Contact us</h2>
+        <p>
+          Email <a href="mailto:admin@blackwoodops.com">admin&#64;blackwoodops.com</a> with any
+          privacy question or request. If a change to this policy materially affects how we handle
+          your information, we will update the date at the top and say what changed.
+        </p>
+      </section>
+
+      <aside class="pp-aside">
+        <p>
+          Curious how HIPAA and state privacy rules have shifted underneath everyone's notices?
+          That story is on our <a routerLink="/privacy-changes">privacy rule changes</a> page.
+        </p>
+      </aside>
+    </article>
+  </div>
+</div>

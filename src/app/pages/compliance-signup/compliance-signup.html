@@ -1,0 +1,322 @@
+<div class="signup-page">
+  <header class="signup-header">
+    <div class="container">
+      <a class="signup-back" routerLink="/compliance">
+        <span aria-hidden="true">←</span> Back to Compliance
+      </a>
+
+      <h1 class="page-title">Let's get your notice right.</h1>
+
+      <p class="signup-header-lede">
+        Three short steps, about two minutes. Your corrected notice lands within five business
+        days and it is yours to keep. Add monitoring and we keep it current from there.
+      </p>
+    </div>
+  </header>
+
+  <div class="container signup-body" id="signup-form">
+    <div class="signup-main">
+      <!-- Progress. Completed steps stay clickable so answers can be changed. -->
+      <ol class="signup-steps">
+        @for (step of steps; track step.key; let i = $index) {
+          <li
+            class="signup-step"
+            [class.current]="i === stepIndex()"
+            [class.done]="i < stepIndex()">
+            <button
+              type="button"
+              (click)="goToStep(i)"
+              [disabled]="!isStepReachable(i)"
+              [attr.aria-current]="i === stepIndex() ? 'step' : null">
+              <span class="signup-step-dot">
+                @if (i < stepIndex()) {
+                  <span class="material-symbols-outlined" aria-hidden="true">check</span>
+                } @else {
+                  {{ i + 1 }}
+                }
+              </span>
+              <span class="signup-step-label">{{ step.label }}</span>
+            </button>
+          </li>
+        }
+      </ol>
+
+      <form class="signup-form" (submit)="onSubmit($event)" novalidate>
+        @if (returnedFromCheckout() && stepIndex() === 0) {
+          <p class="signup-notice" role="status">
+            No charge was made. Pick up where you left off whenever you are ready.
+          </p>
+        }
+
+        <h2 class="signup-step-title">{{ currentStep().title }}</h2>
+
+        @switch (currentStep().key) {
+          @case ('plan') {
+            <div class="signup-plans">
+              @for (plan of plans; track plan.id) {
+                <button
+                  type="button"
+                  class="signup-plan"
+                  [class.chosen]="isChosen(plan.id)"
+                  (click)="choosePlan(plan.id)"
+                  [attr.aria-pressed]="isChosen(plan.id)">
+                  @if (plan.featured) {
+                    <span class="signup-plan-flag">Most practices</span>
+                  }
+
+                  <span class="signup-plan-name">{{ plan.name }}</span>
+                  <span class="signup-plan-price">
+                    {{ plan.price | currency: 'USD' : 'symbol' : '1.0-0' }} <small>one-time</small>
+                  </span>
+                  <span class="signup-plan-scope">{{ plan.scope }}</span>
+
+                  <ul class="signup-plan-features">
+                    @for (feature of plan.features; track feature) {
+                      <li>
+                        <span class="material-symbols-outlined" aria-hidden="true">check</span>
+                        {{ feature }}
+                      </li>
+                    }
+                  </ul>
+                </button>
+              }
+            </div>
+
+            @if (error('plan', 'plan'); as message) {
+              <span class="signup-error">{{ message }}</span>
+            }
+
+            <label class="signup-addon" [class.chosen]="monitoring()">
+              <input
+                type="checkbox"
+                [checked]="monitoring()"
+                (change)="onMonitoringChange($event)">
+              <span class="signup-addon-copy">
+                <span class="signup-addon-title">
+                  Add ongoing monitoring
+                  @if (selectedPlan(); as plan) {
+                    <span class="signup-addon-price">
+                      {{ plan.monitoringPrice | currency: 'USD' : 'symbol' : '1.0-0' }} a month
+                    </span>
+                  }
+                </span>
+                <span class="signup-addon-body">
+                  We watch federal and state rules for your practice and send updated documents
+                  whenever they are required. Month to month, cancel anytime.
+                </span>
+              </span>
+            </label>
+
+            <p class="signup-note">
+              Not sure which fits? Pick the closest and keep going — we will tell you before we
+              start if another plan suits you better.
+            </p>
+          }
+
+          @case ('practice') {
+            <div class="signup-fields" [formGroup]="practiceGroup">
+              <div class="signup-field signup-field-wide">
+                <label for="practice-name">Practice name</label>
+                <input
+                  id="practice-name"
+                  type="text"
+                  formControlName="practiceName"
+                  autocomplete="organization">
+                @if (error('practice', 'practiceName'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              <div class="signup-field signup-field-wide">
+                <label for="practice-type">Practice type</label>
+                <select id="practice-type" formControlName="practiceType">
+                  <option value="" disabled>Select a practice type</option>
+                  @for (type of practiceTypes; track type) {
+                    <option [value]="type">{{ type }}</option>
+                  }
+                </select>
+                @if (error('practice', 'practiceType'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              @if (isOtherPracticeType) {
+                <div class="signup-field signup-field-wide">
+                  <label for="practice-type-other">Tell us your practice type</label>
+                  <input id="practice-type-other" type="text" formControlName="practiceTypeOther">
+                </div>
+              }
+
+              <div class="signup-field">
+                <label for="location-count">Number of locations</label>
+                <input id="location-count" type="number" min="1" formControlName="locationCount">
+                @if (error('practice', 'locationCount'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              <div class="signup-field signup-field-wide">
+                <label for="states">States you practice in</label>
+                <app-state-select inputId="states" formControlName="states" />
+                @if (error('practice', 'states'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              @if (planFitHint(); as hint) {
+                <p class="signup-field-wide signup-notice" role="status">
+                  {{ hint }}
+                  <button type="button" class="signup-link" (click)="goToStep(0)">Change plan</button>
+                </p>
+              }
+
+              <fieldset class="signup-field signup-field-wide signup-fieldset">
+                <legend>Do you currently have a Notice of Privacy Practices?</legend>
+                <div class="signup-radio-row">
+                  @for (option of ['Yes', 'No', 'Not sure']; track option) {
+                    <label class="signup-radio">
+                      <input type="radio" formControlName="hasNotice" [value]="option">
+                      <span>{{ option }}</span>
+                    </label>
+                  }
+                </div>
+                @if (error('practice', 'hasNotice'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </fieldset>
+            </div>
+          }
+
+          @case ('contact') {
+            <div class="signup-fields" [formGroup]="contactGroup">
+              <div class="signup-field">
+                <label for="contact-name">Your name</label>
+                <input id="contact-name" type="text" formControlName="contactName" autocomplete="name">
+                @if (error('contact', 'contactName'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              <div class="signup-field">
+                <label for="contact-phone">Phone</label>
+                <input id="contact-phone" type="tel" formControlName="phone" autocomplete="tel">
+                @if (error('contact', 'phone'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              <div class="signup-field signup-field-wide">
+                <label for="contact-email">Email</label>
+                <input id="contact-email" type="email" formControlName="email" autocomplete="email">
+                @if (error('contact', 'email'); as message) {
+                  <span class="signup-error">{{ message }}</span>
+                }
+              </div>
+
+              <div class="signup-field signup-field-wide">
+                <label for="notice-upload">
+                  Upload your current notice <span class="signup-optional">(optional)</span>
+                </label>
+                <input
+                  id="notice-upload"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt"
+                  (change)="onFileSelected($event)">
+                @if (uploadedFileName(); as fileName) {
+                  <span class="signup-hint">Selected: {{ fileName }}</span>
+                } @else {
+                  <span class="signup-hint">
+                    Helps us start from where you are. Please do not upload patient records.
+                  </span>
+                }
+              </div>
+            </div>
+
+            <p class="signup-note">
+              That is everything we need.
+              @if (monitoring()) {
+                One payment for your update, then monitoring billed monthly — cancel anytime.
+              } @else {
+                One payment, nothing recurring.
+              }
+              No card details stored by us. See our <a routerLink="/privacy">privacy policy</a>
+              for what happens to the rest.
+            </p>
+          }
+        }
+
+        <div class="signup-actions">
+          @if (stepIndex() > 0) {
+            <button type="button" class="btn btn-quiet" (click)="back()">Back</button>
+          }
+
+          @if (isLastStep()) {
+            <button type="submit" class="btn btn-primary" [disabled]="submitState() === 'submitting'">
+              @if (submitState() === 'submitting') {
+                Taking you to secure checkout…
+              } @else {
+                Checkout
+              }
+            </button>
+          } @else {
+            <button type="button" class="btn btn-primary" (click)="next()">
+              Continue <span aria-hidden="true">→</span>
+            </button>
+          }
+        </div>
+
+        @if (submitError(); as message) {
+          <p class="signup-notice signup-notice-error" role="alert">{{ message }}</p>
+        }
+      </form>
+    </div>
+
+    <aside class="signup-summary" aria-label="Order summary">
+      <h2 class="signup-summary-title">Your order</h2>
+
+      @if (selectedPlan(); as plan) {
+        <p class="signup-summary-plan">{{ plan.name }}</p>
+        <p class="signup-summary-scope">{{ plan.scope }}</p>
+
+        <dl class="signup-summary-lines">
+          <div class="signup-summary-line">
+            <dt>Document update</dt>
+            <dd>{{ plan.price | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+          </div>
+          @if (monitoring()) {
+            <div class="signup-summary-line">
+              <dt>Monitoring, first month</dt>
+              <dd>{{ plan.monitoringPrice | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+            </div>
+          }
+          <div class="signup-summary-line signup-summary-total">
+            <dt>Due today</dt>
+            <dd>{{ dueToday() | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+          </div>
+        </dl>
+
+        @if (monitoring()) {
+          <p class="signup-summary-scope">
+            Then {{ plan.monitoringPrice | currency: 'USD' : 'symbol' : '1.0-0' }} a month for
+            monitoring. Cancel anytime.
+          </p>
+        }
+      } @else {
+        <p class="signup-summary-empty">Pick a plan and we will take it from there.</p>
+      }
+
+      <ul class="signup-summary-facts">
+        <li><span class="material-symbols-outlined" aria-hidden="true">schedule</span> Correct notice in your hands within five business days</li>
+        @if (monitoring()) {
+          <li><span class="material-symbols-outlined" aria-hidden="true">event_repeat</span> Monitored continuously, updated documents sent as required</li>
+        }
+        <li><span class="material-symbols-outlined" aria-hidden="true">block</span> No setup fee, and the documents are yours to keep</li>
+      </ul>
+
+      <p class="signup-summary-help">
+        Questions first? Email
+        <a href="mailto:admin@blackwoodops.com">admin&#64;blackwoodops.com</a>.
+      </p>
+    </aside>
+  </div>
+</div>

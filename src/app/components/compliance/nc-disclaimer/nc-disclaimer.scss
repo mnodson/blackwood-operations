@@ -1,0 +1,13 @@
+.nc-disclaimer {
+  background: var(--background-light);
+  border-top: 1px solid var(--border-color);
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+
+  p {
+    max-width: 900px;
+    margin-bottom: 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+}

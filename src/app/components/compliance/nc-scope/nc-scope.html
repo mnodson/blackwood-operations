@@ -1,0 +1,67 @@
+<section id="scope" class="nc-scope">
+  <div class="container">
+    <h2 class="section-title section-title-centered">What this is, and what it is not</h2>
+
+    <p class="nc-scope-lede">
+      We are direct about scope, because the alternative is a client who thinks they bought
+      something they did not.
+    </p>
+
+    <div class="nc-scope-statements">
+      <p class="nc-scope-statement is-affirmative">
+        <strong>This is</strong> a service that keeps a specific public-facing document
+        current, drafted for your practice, monitored against federal and state change, and
+        delivered in usable formats.
+      </p>
+
+      <p class="nc-scope-statement">
+        <strong>This is not</strong> legal advice, and Blackwood Operations is not a law firm. Your
+        notice should be reviewed by your own counsel before you adopt it. Most of our clients find
+        that review takes minutes rather than hours, because the drafting is already done and the
+        reasoning behind each change is explained.
+      </p>
+
+      <p class="nc-scope-statement">
+        <strong>This is also not</strong> a full HIPAA compliance program. Your notice is one
+        required element. Risk analysis, policies and procedures, workforce training, and business
+        associate agreements are separate obligations. We will tell you plainly when something falls
+        outside this service. If you want help with the rest, that is a different conversation
+        and we are happy to have it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="notice-check" class="nc-check">
+  <div class="container">
+    <div class="nc-check-inner">
+      <div class="nc-check-copy">
+        <h2 class="section-title section-title-on-dark">Free Notice Check</h2>
+
+        <p class="nc-check-lede">
+          Send us your current Notice of Privacy Practices. Within three business days you get a
+          written review from someone who reads these every week.
+        </p>
+
+        <p class="nc-check-terms">
+          No obligation, no card required. If your notice is in good shape, we will tell you that.
+        </p>
+
+        <a [href]="reviewMailto" class="btn btn-primary">Send my notice for review</a>
+      </div>
+
+      <div class="nc-check-panel">
+        <p class="nc-check-panel-label">What the review covers</p>
+
+        <ul class="nc-check-list">
+          @for (check of reviewChecks(); track check) {
+            <li>
+              <span class="material-symbols-outlined" aria-hidden="true">task_alt</span>
+              <span>{{ check }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

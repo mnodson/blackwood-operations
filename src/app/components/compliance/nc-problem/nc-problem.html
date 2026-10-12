@@ -1,0 +1,38 @@
+<section id="the-problem" class="nc-problem">
+  <div class="container">
+    <div class="nc-problem-intro">
+      <h2 class="section-title section-title-centered">The problem with your notice</h2>
+
+      <p>
+        Maybe it's on your website. Maybe it's printed on a piece of paper that your receptionist
+        hands to patients when they arrive.
+      </p>
+      <p>
+        Your Notice of Privacy Practices is the only compliance document your patients, your state
+        board, and the Office for Civil Rights can all read without asking your permission. It is
+        posted in your lobby. It is on your website. It is handed to every new patient.
+      </p>
+      <p class="nc-problem-turn">
+        It is also, for most practices, the least maintained document in the building.
+      </p>
+
+      <ul class="nc-failure-list">
+        @for (failure of failures(); track failure) {
+          <li>
+            <span class="material-symbols-outlined" aria-hidden="true">error</span>
+            <span>{{ failure }}</span>
+          </li>
+        }
+      </ul>
+
+      <p class="nc-problem-close">
+        A stale notice is not a filing error. It is a public statement about how you handle patient
+        information that no longer matches the law or your practice.
+      </p>
+
+      <a class="nc-problem-link" routerLink="/privacy-changes">
+        See what actually changed <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>

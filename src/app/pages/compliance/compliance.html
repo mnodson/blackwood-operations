@@ -1,0 +1,36 @@
+<div class="compliance-page">
+  <app-scroll-nav [sections]="sections()" />
+
+  <!-- Fast path: what it is, what it costs, one way to sign up. -->
+  <app-nc-hero />
+  <app-nc-value />
+  <app-nc-pricing />
+
+  <section id="signup" class="compliance-cta">
+    <div class="container">
+      <h2 class="section-title section-title-centered">
+        Your patients are reading the old version.
+      </h2>
+
+      <p>
+        Three short steps, about two minutes, and the corrected notice is in your hands within five
+        business days. We keep it right from there.
+      </p>
+
+      <a routerLink="/compliance/signup" class="btn btn-primary btn-large">
+        Fix my notice now
+      </a>
+
+      <p class="compliance-cta-nudge">One payment from $395. Monitoring from $39 a month.</p>
+    </div>
+  </section>
+
+  <!-- Detail for visitors who want the reasoning before committing. -->
+  <app-nc-problem />
+  <app-nc-audience />
+  <app-nc-scope />
+  <app-nc-faq />
+  <app-nc-disclaimer />
+
+  <app-nc-sticky-cta />
+</div>

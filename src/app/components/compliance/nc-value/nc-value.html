@@ -1,0 +1,39 @@
+<section id="what-you-get" class="nc-value">
+  <div class="container">
+    <h2 class="section-title">What you get</h2>
+
+    <div class="nc-benefits">
+      @for (benefit of benefits(); track benefit.heading) {
+        <article class="nc-benefit">
+          <span class="nc-benefit-icon material-symbols-outlined" aria-hidden="true">
+            {{ benefit.icon }}
+          </span>
+          <h3 class="nc-benefit-heading">{{ benefit.heading }}</h3>
+          <p class="nc-benefit-body">{{ benefit.body }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="nc-how">
+  <div class="nc-how-backdrop" aria-hidden="true">
+    <img src="media/compliance/monitoring-field.svg" alt="">
+  </div>
+
+  <div class="container">
+    <h2 class="section-title section-title-centered">How it works</h2>
+
+    <ol class="nc-steps">
+      @for (step of steps(); track step.heading; let i = $index) {
+        <li class="nc-step">
+          <span class="nc-step-number" aria-hidden="true">{{ i + 1 }}</span>
+          <div class="nc-step-body">
+            <h3 class="nc-step-heading">{{ step.heading }}</h3>
+            <p>{{ step.body }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

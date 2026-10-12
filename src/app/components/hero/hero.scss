@@ -3,6 +3,7 @@
   color: var(--text-light);
   padding: clamp(8rem, 15vw, 12rem) 0 clamp(6rem, 12vw, 10rem);
   min-height: 95vh;
+  min-height: 95svh;
   display: flex;
   align-items: center;
   position: relative;
@@ -141,7 +142,10 @@
 @media (max-width: 768px) {
   .hero {
     padding: clamp(4rem, 10vw, 6rem) 0 clamp(4rem, 8vw, 6rem);
-    height: 95vh;
+    /* Grows with the content instead of clipping it, and svh keeps the mobile
+       browser chrome from pushing the bottom of the hero off screen. */
+    height: auto;
+    min-height: 95svh;
 
     .hero-background {
       video {

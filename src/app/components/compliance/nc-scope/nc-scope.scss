@@ -1,0 +1,132 @@
+.nc-scope {
+  background: #ffffff;
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: 2.5rem;
+}
+
+.nc-scope-lede {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+}
+
+.nc-scope-statements {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.nc-scope-statement {
+  margin-bottom: 0;
+  padding: 1.75rem;
+  background: var(--background-cream);
+  border-top: 3px solid var(--text-secondary);
+  color: var(--text-secondary);
+
+  strong {
+    color: var(--primary-color);
+  }
+
+  &.is-affirmative {
+    border-top-color: var(--accent-color);
+  }
+}
+
+/* --- Free Notice Check --- */
+
+.nc-check {
+  background: linear-gradient(135deg, #0a2e38 0%, #134652 100%);
+  color: var(--text-light);
+}
+
+/* Copy on the left, the review checklist in a panel alongside it. */
+.nc-check-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.nc-check-lede {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 1.5rem;
+}
+
+.nc-check-terms {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.nc-check-panel {
+  padding: 2.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+}
+
+.nc-check-panel-label {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6cb8c7;
+}
+
+.nc-check-list {
+  list-style: none;
+  display: grid;
+  gap: 1.125rem;
+
+  li {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+  }
+
+  .material-symbols-outlined {
+    color: #6cb8c7;
+    font-size: 1.375rem;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .nc-check-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nc-scope {
+    text-align: left;
+  }
+
+  .nc-scope-statement {
+    padding: 1.25rem 1.375rem;
+  }
+
+  .nc-check-panel {
+    padding: 1.75rem 1.375rem;
+  }
+
+  .nc-check .btn {
+    width: 100%;
+    max-width: 360px;
+  }
+}

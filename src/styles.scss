@@ -87,6 +87,18 @@ button {
   font-family: inherit;
 }
 
+/* Nothing may push the page wider than the viewport on a phone. */
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -151,6 +163,13 @@ section {
   padding: clamp(4rem, 10vw, 8rem) 0;
 }
 
+/* The compliance page stacks many short sections in a row, so the marketing-page
+   rhythm leaves dead space between headings. Global rather than component-scoped
+   because it has to reach the sections inside the nc-* components. */
+.compliance-page section {
+  padding: clamp(2.75rem, 5vw, 4.5rem) 0;
+}
+
 /* Modern Heading Styles */
 .section-title {
   position: relative;
@@ -171,43 +190,29 @@ section {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
 }
 
+/*
+ * Composite rule: a short solid bar, a small square marker and a hairline that
+ * carries on past it. Drawn as stacked background layers on one pseudo-element
+ * (first layer paints on top).
+ */
 .section-title::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: -16px;
   left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #134652 0%, #134652 30%, transparent 100%);
-  border-radius: 2px;
-  animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  width: 168px;
+  max-width: 100%;
+  height: 5px;
+  background-image:
+    linear-gradient(#0a2e38, #0a2e38),
+    linear-gradient(#134652, #134652),
+    linear-gradient(90deg, rgba(19, 70, 82, 0.32) 0%, rgba(19, 70, 82, 0.32) 65%, rgba(19, 70, 82, 0) 100%);
+  background-size: 48px 2px, 5px 5px, 100% 1px;
+  background-position: left center, 58px center, left center;
+  background-repeat: no-repeat;
 }
 
-/* Section title variant for dark backgrounds */
-.section-title-on-dark {
-  background: linear-gradient(135deg, #4e8d9c 0%, #6cb8c7 50%, #011518 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-
-  &::after {
-    background: linear-gradient(135deg, #4e8d9c 0%, #6cb8c7 50%, #011518 100%);
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    width: 0;
-    opacity: 0;
-  }
-  to {
-    width: 60px;
-    opacity: 1;
-  }
-}
-
+/* Centring is owned by this class alone, so the colour variants stay alignment-agnostic. */
 .section-title-centered {
   display: block;
   text-align: center;
@@ -215,7 +220,43 @@ section {
   &::after {
     left: 50%;
     transform: translateX(-50%);
+    background-image:
+      linear-gradient(#0a2e38, #0a2e38),
+      linear-gradient(#134652, #134652),
+      linear-gradient(#134652, #134652),
+      linear-gradient(90deg, rgba(19, 70, 82, 0) 0%, rgba(19, 70, 82, 0.32) 22%, rgba(19, 70, 82, 0.32) 78%, rgba(19, 70, 82, 0) 100%);
+    background-size: 48px 2px, 5px 5px, 5px 5px, 100% 1px;
+    background-position: center, calc(50% - 36px) center, calc(50% + 36px) center, center;
   }
+}
+
+/* Section title variant for dark backgrounds */
+.section-title-on-dark {
+  /* Stays light across the whole sweep: a dark stop reads as a smudge on the teal ground. */
+  background: linear-gradient(135deg, #ffffff 0%, #e4f2f5 40%, #9fd4de 75%, #6cb8c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.3));
+
+  &::after {
+    background-image:
+      linear-gradient(#6cb8c7, #6cb8c7),
+      linear-gradient(#4e8d9c, #4e8d9c),
+      linear-gradient(90deg, rgba(108, 184, 199, 0.35) 0%, rgba(108, 184, 199, 0.35) 65%, rgba(108, 184, 199, 0) 100%);
+    background-size: 48px 2px, 5px 5px, 100% 1px;
+    background-position: left center, 58px center, left center;
+  }
+}
+
+.section-title-centered.section-title-on-dark::after {
+  background-image:
+    linear-gradient(#6cb8c7, #6cb8c7),
+    linear-gradient(#4e8d9c, #4e8d9c),
+    linear-gradient(#4e8d9c, #4e8d9c),
+    linear-gradient(90deg, rgba(108, 184, 199, 0) 0%, rgba(108, 184, 199, 0.35) 22%, rgba(108, 184, 199, 0.35) 78%, rgba(108, 184, 199, 0) 100%);
+  background-size: 48px 2px, 5px 5px, 5px 5px, 100% 1px;
+  background-position: center, calc(50% - 36px) center, calc(50% + 36px) center, center;
 }
 
 .section-title-accent {
@@ -238,7 +279,7 @@ section {
 .page-title {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 2;
   letter-spacing: -0.04em;
   margin-bottom: 1.5rem;
 
@@ -311,12 +352,20 @@ section {
   }
 
   .section-title::after {
-    width: 45px;
+    width: 120px;
+    bottom: -12px;
+    background-size: 36px 2px, 4px 4px, 100% 1px;
+    background-position: left center, 44px center, left center;
   }
 
-  @keyframes slideIn {
-    to {
-      width: 45px;
-    }
+  .section-title-on-dark::after {
+    background-size: 36px 2px, 4px 4px, 100% 1px;
+    background-position: left center, 44px center, left center;
+  }
+
+  .section-title-centered::after,
+  .section-title-centered.section-title-on-dark::after {
+    background-size: 36px 2px, 4px 4px, 4px 4px, 100% 1px;
+    background-position: center, calc(50% - 28px) center, calc(50% + 28px) center, center;
   }
 }

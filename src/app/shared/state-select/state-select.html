@@ -1,0 +1,73 @@
+<button
+  type="button"
+  class="state-select-trigger"
+  [id]="inputId()"
+  [disabled]="isDisabled()"
+  [attr.aria-expanded]="isOpen()"
+  [attr.aria-controls]="inputId() + '-panel'"
+  (click)="toggleOpen()">
+  <span class="state-select-summary">
+    @switch (selectedStates().length) {
+      @case (0) {
+        <span class="state-select-placeholder">Select states</span>
+      }
+      @case (1) {
+        {{ selectedStates()[0].name }}
+      }
+      @default {
+        {{ selectedStates().length }} states selected
+      }
+    }
+  </span>
+  <span class="material-symbols-outlined" aria-hidden="true">
+    {{ isOpen() ? 'expand_less' : 'expand_more' }}
+  </span>
+</button>
+
+@if (isOpen()) {
+  <div class="state-select-panel" [id]="inputId() + '-panel'">
+    <input
+      type="search"
+      class="state-select-search"
+      placeholder="Search states"
+      aria-label="Search states"
+      [value]="query()"
+      (input)="onQuery($event)">
+
+    <fieldset class="state-select-options">
+      <legend class="visually-hidden">States you practice in</legend>
+      @for (state of options(); track state.code) {
+        <label class="state-select-option">
+          <input
+            type="checkbox"
+            [checked]="isSelected(state.code)"
+            (change)="toggle(state.code)">
+          <span>{{ state.name }}</span>
+        </label>
+      } @empty {
+        <p class="state-select-empty">No states match “{{ query() }}”.</p>
+      }
+    </fieldset>
+
+    <div class="state-select-footer">
+      <button type="button" class="state-select-done" (click)="close()">Done</button>
+    </div>
+  </div>
+}
+
+@if (selectedStates().length) {
+  <ul class="state-select-chips" aria-label="Selected states">
+    @for (state of selectedStates(); track state.code) {
+      <li class="state-select-chip">
+        {{ state.name }}
+        <button
+          type="button"
+          [disabled]="isDisabled()"
+          [attr.aria-label]="'Remove ' + state.name"
+          (click)="remove(state.code)">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </li>
+    }
+  </ul>
+}
