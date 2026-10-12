@@ -365,6 +365,14 @@
   }
 }
 
+/* Legal qualifiers: present but deliberately quiet. */
+.signup-fine-print {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
 .signup-error {
   font-size: 0.875rem;
   font-weight: 600;

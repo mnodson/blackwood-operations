@@ -200,6 +200,11 @@ export function customerConfirmationEmail(
     ? `You told us you have more than ${MAX_NOTICE_FILES} documents. We will be in touch shortly to receive the rest.`
     : null;
   const questions = `Questions? Just reply to this email or write to ${replyTo}.`;
+  // Mirrors the fine print on the signup page (compliance-signup.html).
+  const documentLimit =
+    'Each order includes review of up to 20 files you provide, totaling no more than 50 pages ' +
+    '(11-point font, single-spaced, standard margins), on every plan and with or without ' +
+    'monitoring. Larger document sets are quoted separately.';
   // Monitoring customers manage their card and cancel through Stripe's portal.
   const portal =
     signup.monitoring && billingPortalUrl
@@ -224,7 +229,9 @@ export function customerConfirmationEmail(
     ...(portal ? [portal, billingPortalUrl, ''] : []),
     questions,
     '',
-    '— The Blackwood Operations team'
+    '— The Blackwood Operations team',
+    '',
+    documentLimit
   ].join('\n');
 
   const html = layout({
@@ -246,7 +253,8 @@ export function customerConfirmationEmail(
           `<a href="mailto:${escape(replyTo)}" style="color:${BRAND.accent}">${escape(replyTo)}</a>.`,
         { raw: true }
       ),
-      paragraph('— The Blackwood Operations team')
+      paragraph('— The Blackwood Operations team'),
+      finePrint(documentLimit)
     ].join('\n')
   });
 
@@ -366,6 +374,13 @@ function paragraph(content: string, { raw = false } = {}): string {
   return (
     `<p style="margin:0 0 16px;font-family:${FONT};font-size:15px;line-height:1.6;color:${BRAND.text}">` +
     `${raw ? content : escape(content)}</p>`
+  );
+}
+
+function finePrint(content: string): string {
+  return (
+    `<p style="margin:24px 0 0;font-family:${FONT};font-size:12px;line-height:1.5;color:${BRAND.muted}">` +
+    `${escape(content)}</p>`
   );
 }
 
