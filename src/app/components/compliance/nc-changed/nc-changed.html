@@ -7,45 +7,91 @@
       The last two years are a useful illustration of why an annual set-and-forget approach fails.
     </p>
 
-    <!-- Two federal changes pulling in opposite directions. The amber flow is language
-         practices added and then had to strip back out; the teal flow is language they
-         had to add and keep. -->
-    <svg class="nc-opposing" viewBox="0 0 900 290" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="Reproductive health language was added to notices in 2024 and then vacated in June 2025, so it had to come back out. Separately, 42 CFR Part 2 disclosures had to be added by February 16, 2026 and remain required.">
+    <!-- Obligations flowing into one notice. Each change joins the trunk and thickens it,
+         because none of them replaced the one before. Wide screens get a horizontal
+         layout; narrow screens get the same story stacked vertically. -->
+    <svg class="nc-accumulating nc-accumulating-wide" viewBox="0 0 900 275"
+      preserveAspectRatio="xMidYMid meet" role="img"
+      aria-label="Four changes added to what privacy notices must cover: Washington's health data policy requirement in March 2024, Texas notice content requirements in July 2024, Minnesota's consent requirement for health data outside HIPAA in July 2025, and 42 CFR Part 2 disclosures in February 2026. All four remain in force.">
 
-      <!-- Flow one: in, then back out -->
-      <g class="nc-flow nc-flow-out">
-        <path class="nc-flow-line"
-          d="M96 168 C 150 168, 152 92, 214 92 L 318 92 C 382 92, 372 222, 428 222"/>
-        <circle class="nc-flow-origin" cx="96" cy="168" r="5"/>
-        <g class="nc-flow-terminal" transform="translate(452 222)">
-          <circle r="17"/>
-          <path class="nc-flow-glyph" d="M-7 0 H7"/>
-        </g>
-        <text class="nc-flow-label" x="266" y="70" text-anchor="middle">
-          Reproductive health language added
-        </text>
-        <text class="nc-flow-date" x="96" y="196" text-anchor="middle">April 2024</text>
-        <text class="nc-flow-outcome" x="452" y="264" text-anchor="middle">
-          Vacated — has to come back out
-        </text>
-        <text class="nc-flow-date" x="452" y="284" text-anchor="middle">June 2025</text>
-      </g>
-
-      <!-- Flow two: in, and it stays -->
       <g class="nc-flow nc-flow-in">
-        <path class="nc-flow-line"
-          d="M566 168 C 626 168, 630 104, 700 104 L 762 104"/>
-        <circle class="nc-flow-origin" cx="566" cy="168" r="5"/>
-        <g class="nc-flow-terminal" transform="translate(786 104)">
+        <!-- Washington -->
+        <text class="nc-flow-date" x="110" y="26" text-anchor="middle">March 2024</text>
+        <text class="nc-flow-label" x="110" y="54" text-anchor="middle">
+          <tspan x="110">Washington</tspan>
+          <tspan x="110" dy="1.2em">health data policy</tspan>
+        </text>
+        <circle class="nc-flow-origin" cx="110" cy="115" r="5"/>
+        <path class="nc-flow-line" d="M110 115 C 110 185, 150 215, 200 215"/>
+        <!-- Texas -->
+        <text class="nc-flow-date" x="290" y="26" text-anchor="middle">July 2024</text>
+        <text class="nc-flow-label" x="290" y="54" text-anchor="middle">
+          <tspan x="290">Texas</tspan>
+          <tspan x="290" dy="1.2em">notice contents</tspan>
+        </text>
+        <circle class="nc-flow-origin" cx="290" cy="115" r="5"/>
+        <path class="nc-flow-line" d="M290 115 C 290 185, 330 215, 380 215"/>
+        <!-- Minnesota -->
+        <text class="nc-flow-date" x="470" y="26" text-anchor="middle">July 2025</text>
+        <text class="nc-flow-label" x="470" y="54" text-anchor="middle">
+          <tspan x="470">Minnesota</tspan>
+          <tspan x="470" dy="1.2em">health data consent</tspan>
+        </text>
+        <circle class="nc-flow-origin" cx="470" cy="115" r="5"/>
+        <path class="nc-flow-line" d="M470 115 C 470 185, 510 215, 560 215"/>
+        <!-- 42 CFR Part 2 -->
+        <text class="nc-flow-date" x="650" y="26" text-anchor="middle">February 2026</text>
+        <text class="nc-flow-label" x="650" y="54" text-anchor="middle">
+          <tspan x="650">42 CFR Part 2</tspan>
+          <tspan x="650" dy="1.2em">disclosures</tspan>
+        </text>
+        <circle class="nc-flow-origin" cx="650" cy="115" r="5"/>
+        <path class="nc-flow-line" d="M650 115 C 650 185, 690 215, 740 215"/>
+
+        <!-- The trunk gets heavier with each obligation it carries. -->
+        <path class="nc-flow-line nc-flow-trunk-1" d="M200 215 L 380 215"/>
+        <path class="nc-flow-line nc-flow-trunk-2" d="M380 215 L 560 215"/>
+        <path class="nc-flow-line nc-flow-trunk-3" d="M560 215 L 740 215"/>
+        <path class="nc-flow-line nc-flow-trunk-4" d="M740 215 L 803 215"/>
+
+        <text class="nc-flow-label" x="820" y="182" text-anchor="middle">Your notice</text>
+        <g class="nc-flow-terminal" transform="translate(820 215)">
           <circle r="17"/>
           <path class="nc-flow-glyph" d="M-7 0 H7 M0 -7 V7"/>
         </g>
-        <text class="nc-flow-label" x="676" y="82" text-anchor="middle">
-          Part 2 disclosures required
-        </text>
-        <text class="nc-flow-outcome" x="786" y="146" text-anchor="middle">Still in force</text>
-        <text class="nc-flow-date" x="786" y="166" text-anchor="middle">February 16, 2026</text>
+        <text class="nc-flow-outcome" x="820" y="258" text-anchor="middle">All still in force</text>
+      </g>
+    </svg>
+
+    <svg class="nc-accumulating nc-accumulating-tall" viewBox="0 0 340 470"
+      preserveAspectRatio="xMinYMin meet" role="img"
+      aria-label="Four changes added to what privacy notices must cover: Washington's health data policy requirement in March 2024, Texas notice content requirements in July 2024, Minnesota's consent requirement for health data outside HIPAA in July 2025, and 42 CFR Part 2 disclosures in February 2026. All four remain in force.">
+
+      <g class="nc-flow nc-flow-in">
+        <path class="nc-flow-line nc-flow-trunk-1" d="M24 44 L 24 144"/>
+        <path class="nc-flow-line nc-flow-trunk-2" d="M24 144 L 24 244"/>
+        <path class="nc-flow-line nc-flow-trunk-3" d="M24 244 L 24 344"/>
+        <path class="nc-flow-line nc-flow-trunk-4" d="M24 344 L 24 423"/>
+
+        <text class="nc-flow-date" x="52" y="36">March 2024</text>
+        <text class="nc-flow-label" x="52" y="58">Washington health data policy</text>
+        <circle class="nc-flow-origin" cx="24" cy="44" r="6"/>
+        <text class="nc-flow-date" x="52" y="136">July 2024</text>
+        <text class="nc-flow-label" x="52" y="158">Texas notice contents</text>
+        <circle class="nc-flow-origin" cx="24" cy="144" r="6"/>
+        <text class="nc-flow-date" x="52" y="236">July 2025</text>
+        <text class="nc-flow-label" x="52" y="258">Minnesota health data consent</text>
+        <circle class="nc-flow-origin" cx="24" cy="244" r="6"/>
+        <text class="nc-flow-date" x="52" y="336">February 2026</text>
+        <text class="nc-flow-label" x="52" y="358">42 CFR Part 2 disclosures</text>
+        <circle class="nc-flow-origin" cx="24" cy="344" r="6"/>
+
+        <g class="nc-flow-terminal" transform="translate(24 440)">
+          <circle r="17"/>
+          <path class="nc-flow-glyph" d="M-7 0 H7 M0 -7 V7"/>
+        </g>
+        <text class="nc-flow-label" x="52" y="436">Your notice</text>
+        <text class="nc-flow-outcome" x="52" y="456">All still in force</text>
       </g>
     </svg>
 
@@ -71,15 +117,14 @@
     </ol>
 
     <p class="nc-changed-pivot">
-      Two federal changes. Eighteen months apart. Pulling in opposite directions. Then add your
-      state.
+      Year after year, the changes keep coming.
     </p>
 
     <p class="nc-changed-states">
-      Washington's My Health My Data Act. Nevada SB 370, effective January 2026. Minnesota's
-      consumer health data provisions. California AB 45, restricting geofencing around health
-      facilities. New York's proposed health information privacy act. None of these are HIPAA,
-      and all of them can reach a practice that treats HIPAA as the finish line.
+      Federal regulation 42 CFR Part 2. Washington's My Health My Data Act. Nevada SB 370.
+      Minnesota's consumer health data provisions. California AB 45. New York's proposed health
+      information privacy act. All of these changes can reach an organization that handles health
+      information, from medical practices to law firms and schools.
     </p>
 
     <p class="nc-changed-kicker">This is not a document that holds still.</p>

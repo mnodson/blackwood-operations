@@ -22,12 +22,18 @@
   line-height: 1.3;
 }
 
-.nc-opposing {
+.nc-accumulating {
   display: block;
   width: 100%;
   max-width: 900px;
   height: auto;
   margin: 0 auto 3rem;
+}
+
+.nc-accumulating-tall {
+  display: none;
+  max-width: 340px;
+  margin-left: 0;
 }
 
 .nc-flow-line {
@@ -38,6 +44,18 @@
 
 .nc-flow-terminal circle {
   stroke-width: 2;
+}
+
+.nc-flow-trunk-2 {
+  stroke-width: 4;
+}
+
+.nc-flow-trunk-3 {
+  stroke-width: 5.5;
+}
+
+.nc-flow-trunk-4 {
+  stroke-width: 7;
 }
 
 .nc-flow-glyph {
@@ -62,27 +80,6 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   fill: var(--text-secondary);
-}
-
-/* Language that went in and then had to come back out. */
-.nc-flow-out {
-  .nc-flow-line,
-  .nc-flow-glyph {
-    stroke: #b45309;
-  }
-
-  .nc-flow-origin {
-    fill: #b45309;
-  }
-
-  .nc-flow-terminal circle {
-    fill: #fdf3e7;
-    stroke: #b45309;
-  }
-
-  .nc-flow-outcome {
-    fill: #b45309;
-  }
 }
 
 /* Language that went in and stayed. */
@@ -184,19 +181,13 @@
     text-align: left;
   }
 
-  /* The viewBox scales down hard on narrow screens, so grow the type in user
-     units to keep the labels legible. */
-  .nc-flow-label {
-    font-size: 24px;
+  /* Four labels side by side get too small to read, so stack them instead. */
+  .nc-accumulating-wide {
+    display: none;
   }
 
-  .nc-flow-outcome {
-    font-size: 21px;
-  }
-
-  .nc-flow-date {
-    font-size: 20px;
-    letter-spacing: 0.03em;
+  .nc-accumulating-tall {
+    display: block;
   }
 
   .nc-timeline-entry {

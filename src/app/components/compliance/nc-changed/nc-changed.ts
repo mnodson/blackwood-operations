@@ -30,30 +30,40 @@ export class NcChangedComponent implements AfterViewInit, OnDestroy {
 
   protected readonly timeline = signal<TimelineEntry[]>([
     {
-      date: 'April 2024',
+      date: 'March 2024',
       direction: 'add',
       body:
-        'HHS finalized a rule adding heightened protections for reproductive health information. ' +
-        'Covered entities were told to revise their notices by December 23, 2024. Many did.'
+        'Your privacy policy alone is not sufficient. Washington now requires a second one, just ' +
+        'for health data, with its own link on your homepage. And it isn’t only the Attorney ' +
+        'General you answer to: consumers can take you to court themselves.'
     },
     {
-      date: 'June 2025',
-      direction: 'remove',
-      body:
-        'A federal court in Texas vacated that rule nationwide in Purl v. HHS. The Fifth Circuit ' +
-        'dismissed the appeal in September 2025. The language practices had just added was no ' +
-        'longer required, and the underlying protections no longer applied.'
-    },
-    {
-      date: 'February 16, 2026',
+      date: 'July 2024',
       direction: 'add',
       body:
-        'A separate requirement survived the same ruling. Every HIPAA covered entity that creates, ' +
-        'receives, maintains, or transmits substance use disorder records under 42 CFR Part 2 was ' +
-        'required to revise its notice by this date. That includes practices that have never ' +
-        'considered themselves substance use providers, because Part 2 records travel through ' +
-        'referrals, care coordination, and integrated care arrangements. OCR began accepting ' +
-        'related complaints on the same day.'
+        'Texas made the notice itself the obligation. It must name the categories of personal ' +
+        'data you process, including sensitive data, why you process it, who you share it with, ' +
+        'and how a consumer can appeal when you deny their request. Leave a piece out and each ' +
+        'violation can cost up to $7,500.'
+    },
+    {
+      date: 'July 2025',
+      direction: 'add',
+      body:
+        'Minnesota went after the data HIPAA leaves behind. Health information on your website, ' +
+        'in your marketing, anywhere HIPAA doesn’t reach, now needs consent. If your systems ' +
+        'profile people to make decisions about their healthcare, education, or employment, they ' +
+        'can question the result and demand an explanation. And the grace period for fixing ' +
+        'mistakes is over.'
+    },
+    {
+      date: 'February 2026',
+      direction: 'add',
+      body:
+        'You may hold substance use disorder records without realizing it. They arrive through ' +
+        'referrals, care coordination, and integrated care, and every HIPAA covered entity ' +
+        'holding them had to update its notice. Under 42 CFR Part 2, you have specific ' +
+        'obligations, and OCR is already taking complaints.'
     }
   ]);
 
