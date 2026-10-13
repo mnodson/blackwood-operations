@@ -10,17 +10,18 @@
         <div class="nc-hero-eyebrow heading-badge">Compliance</div>
 
         <h1 class="page-title">
-          Your Notice of Privacy Practices is probably wrong in two directions at once.
+          Federal rules changed. State rules changed. Your privacy notice probably didn’t.
         </h1>
 
         <p class="nc-hero-lede">
-          If you updated it in 2024, it says something a federal court struck down. If you have not
-          touched it since, it is missing what every covered entity had to add by February 2026.
+          If you haven’t reviewed your privacy notices this year, you are probably missing recent
+          changes. If yours are ten or twenty years old, your patients and clients can tell.
         </p>
 
         <p class="nc-hero-lede">
-          Compliance keeps your public-facing HIPAA and privacy notices accurate,
-          practice-specific, and ready for the next change. From $395, with optional monitoring.
+          Whether you need a HIPAA Notice of Privacy Practices, a state privacy notice, or both, we
+          draft it for your organization, keep it current, and tell you when the rules change. From
+          $395, with optional monitoring.
         </p>
 
         <div class="nc-hero-cta">
@@ -33,7 +34,7 @@
         </p>
       </div>
 
-      <!-- The hook: the two federal changes that pulled notices in opposite directions,
+      <!-- The hook: the federal and state changes behind an out-of-date notice,
            stated in the hero rather than six sections down the page. -->
       <aside class="nc-hero-changed" aria-labelledby="nc-hero-changed-title">
         <h2 id="nc-hero-changed-title" class="nc-hero-changed-title">What actually changed</h2>
@@ -59,28 +60,19 @@
           }
         </ol>
 
-        <!-- Where today sits against the timeline above, and what that costs. -->
+        <!-- The other documents we prepare beyond the notices themselves. -->
         <div class="nc-hero-now">
           <span class="nc-hero-now-tag">
             <span class="nc-hero-now-dot" aria-hidden="true"></span>
-            You are here · {{ todayLabel() }}
+            Beyond privacy notices.
           </span>
 
-          @if (isPastDeadline()) {
-            <p class="nc-hero-now-body">
-              <strong>{{ elapsedLabel() }} past the Part 2 deadline.</strong> OCR has been taking
-              complaints since the day it passed. A notice updated in 2024 still carries language
-              the courts removed; one that has not been touched is missing February's disclosures.
-              Either way, that is the version your patients are reading today.
-            </p>
-          } @else {
-            <p class="nc-hero-now-body">
-              <strong>{{ elapsedLabel() }} until the Part 2 deadline.</strong> A notice updated in
-              2024 already carries language the courts removed, and the new disclosures still have
-              to go in. Start now and both are handled in one pass.
-            </p>
-          }
-
+          <p class="nc-hero-now-body">
+            <strong>We also prepare HIPAA authorizations</strong> and consent forms for
+            organizations that request client health records, such as law firms, insurers, and
+            schools. Newer rules require separate forms for some records, including substance use
+            and mental health, and outdated forms can delay or block a records request.
+          </p>
         </div>
 
         <a class="nc-hero-changed-link" routerLink="/privacy-changes">
