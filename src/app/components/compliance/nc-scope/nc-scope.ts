@@ -9,7 +9,6 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 export class NcScopeComponent {
   protected readonly reviewChecks = signal<string[]>([
     'Whether it reflects the February 2026 Part 2 requirements',
-    'Whether it still contains language from the vacated 2024 reproductive health rule',
     'Whether it addresses the health privacy laws in your state',
     'Whether it covers the required patient rights and contact information',
     'When it was last revised, and what has changed since'
