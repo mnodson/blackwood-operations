@@ -3,13 +3,24 @@
     <h2 class="section-title">What you get</h2>
 
     <div class="nc-benefits">
-      @for (benefit of benefits(); track benefit.heading) {
+      @for (benefit of benefits(); track benefit.heading; let first = $first) {
         <article class="nc-benefit">
           <span class="nc-benefit-icon material-symbols-outlined" aria-hidden="true">
             {{ benefit.icon }}
           </span>
           <h3 class="nc-benefit-heading">{{ benefit.heading }}</h3>
           <p class="nc-benefit-body">{{ benefit.body }}</p>
+
+          @if (first) {
+            <h3 class="nc-benefit-heading nc-benefit-subheading">Which do you need?</h3>
+            <ul class="nc-notice-types">
+              @for (type of noticeTypes(); track type.label) {
+                <li class="nc-benefit-body">
+                  <strong>{{ type.label }}</strong> {{ type.body }}
+                </li>
+              }
+            </ul>
+          }
         </article>
       }
     </div>

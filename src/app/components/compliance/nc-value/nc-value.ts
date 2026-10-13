@@ -6,6 +6,11 @@ interface Benefit {
   body: string;
 }
 
+interface NoticeType {
+  label: string;
+  body: string;
+}
+
 interface Step {
   heading: string;
   body: string;
@@ -57,6 +62,30 @@ export class NcValueComponent {
         'Written for a practice manager, not a compliance officer. If a change requires action ' +
         'beyond the notice itself, such as updating an intake form or a business associate ' +
         'agreement, we say so.'
+    }
+  ]);
+
+  /** Shown inside the lead benefit to help visitors pick the right notice. */
+  protected readonly noticeTypes = signal<NoticeType[]>([
+    {
+      label: 'HIPAA Notice of Privacy Practices.',
+      body: 'Medical, dental, behavioral health, and other practices covered by HIPAA.'
+    },
+    {
+      label: 'State privacy notices.',
+      body:
+        'Organizations that hold health or personal information outside HIPAA, such as law ' +
+        'firms, schools, insurers, and fitness and wellness providers.'
+    },
+    {
+      label: 'Both.',
+      body:
+        'Practices in states with their own health privacy laws, like Texas, and organizations ' +
+        'operating across several states.'
+    },
+    {
+      label: 'Not sure?',
+      body: 'Send us what you have. Our free Notice Check tells you which apply to you.'
     }
   ]);
 

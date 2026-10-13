@@ -6,7 +6,6 @@ interface HeroChange {
   /** Which way this change pushed a practice's notice. */
   direction: 'add' | 'remove';
   body: string;
-  status: string;
 }
 
 @Component({
@@ -24,8 +23,7 @@ export class NcHeroComponent {
       direction: 'add',
       body:
         'The HIPAA Omnibus Rule added new patient rights every notice had to include, and made ' +
-        'business associates directly liable for protecting health information.',
-      status: 'Added'
+        'business associates directly liable for protecting health information.'
     },
     {
       date: 'As of 2023 · STATE',
@@ -33,16 +31,14 @@ export class NcHeroComponent {
       body:
         'States started writing their own rules. By the end of 2023, thirteen states adopted ' +
         'privacy laws: California, Colorado, Connecticut, Delaware, Florida, Indiana, Iowa, ' +
-        'Montana, Oregon, Tennessee, Texas, Utah, and Virginia.',
-      status: 'Added'
+        'Montana, Oregon, Tennessee, Texas, Utah, and Virginia.'
     },
     {
       date: 'February 2026 · FEDERAL',
       direction: 'add',
       body:
         'New substance use (Part 2) disclosures became mandatory in HIPAA notices, including at ' +
-        'practices that have never considered themselves substance use providers.',
-      status: 'Still in force'
+        'practices that have never considered themselves substance use providers.'
     }
   ]);
 }

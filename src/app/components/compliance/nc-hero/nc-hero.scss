@@ -175,25 +175,6 @@
   color: var(--text-light);
 }
 
-.nc-hero-change-status {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.1875rem 0.5rem;
-  border-radius: 2px;
-
-  .is-add & {
-    color: #6cb8c7;
-    background: rgba(108, 184, 199, 0.12);
-  }
-
-  .is-remove & {
-    color: var(--accent-color);
-    background: rgba(212, 165, 116, 0.12);
-  }
-}
-
 .nc-hero-now {
   margin-top: 1.5rem;
   padding: 1.125rem 1.25rem;
